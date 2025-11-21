@@ -9,11 +9,11 @@ import { FormsModule } from '@angular/forms';
 })
 export class SearchBarComponent {
 
-  term: string = ''; // <-- aquí se guarda el texto del input
+  term: string = '';
 
   @Output() searchEvent = new EventEmitter<string>();
 
   emitSearch() {
-    this.searchEvent.emit(this.term);  // <-- enviamos el texto al padre
+    this.searchEvent.emit(this.term);   // 👈 enviar el texto real
   }
 }
