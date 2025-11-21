@@ -1,0 +1,19 @@
+<div class="bg-white dark:bg-gray-800 rounded-xl shadow p-3 flex flex-col w-full max-w-[260px]">
+  
+  <div class="w-full h-40 overflow-hidden rounded-md">
+    <img 
+      [src]="product.image"
+      [alt]="product.name"
+      class="w-full h-full object-contain bg-white"
+    />
+  </div>
+
+  <h3 class="font-semibold text-base mt-2 dark:text-white">{{ product.name }}</h3>
+  <p class="text-xs text-gray-500">{{ product.desc }}</p>
+
+  <div class="mt-2 flex items-center justify-between">
+    <div class="font-bold text-blue-600 text-sm">${{ product.price }}</div>
+    <a [routerLink]="['/product', product.id]" class="text-sm text-blue-500">Ver</a>
+  </div>
+
+</div>

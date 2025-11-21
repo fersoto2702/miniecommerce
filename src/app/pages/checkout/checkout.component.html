@@ -1,0 +1,13 @@
+<div class="max-w-md mx-auto p-6 bg-white dark:bg-gray-800 rounded">
+  <h1 class="text-2xl font-bold mb-4">Checkout</h1>
+  <p class="mb-4">Total: <strong>${{ total }}</strong></p>
+
+  <input [(ngModel)]="name" name="n" placeholder="Nombre en tarjeta" class="w-full mb-2 p-2 border rounded" />
+  <input [(ngModel)]="card" name="c" placeholder="Número de tarjeta" class="w-full mb-2 p-2 border rounded" />
+  <div class="flex gap-2 mb-4">
+    <input [(ngModel)]="exp" name="e" placeholder="MM/AA" class="flex-1 p-2 border rounded" />
+    <input [(ngModel)]="cvv" name="v" placeholder="CVV" class="w-24 p-2 border rounded" />
+  </div>
+
+  <button (click)="pay()" class="bg-green-600 text-white w-full py-2 rounded">Pagar (simulado)</button>
+</div>

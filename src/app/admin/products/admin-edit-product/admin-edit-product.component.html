@@ -1,0 +1,15 @@
+<app-admin-sidebar></app-admin-sidebar>
+
+<div class="ml-72 p-10 max-w-xl">
+  <h1 class="text-3xl font-bold mb-6">Editar Producto</h1>
+
+  <form class="flex flex-col gap-4">
+    <input [(ngModel)]="product.name" name="name" class="p-2 border rounded" placeholder="Nombre">
+    <input [(ngModel)]="product.price" name="price" class="p-2 border rounded" placeholder="Precio">
+    <textarea [(ngModel)]="product.desc" name="desc" class="p-2 border rounded" placeholder="Descripción"></textarea>
+
+    <button (click)="save()" class="bg-blue-600 text-white px-4 py-2 rounded">
+      Guardar
+    </button>
+  </form>
+</div>

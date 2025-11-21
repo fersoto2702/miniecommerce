@@ -1,0 +1,64 @@
+<div class="max-w-6xl mx-auto p-6 grid md:grid-cols-2 gap-10">
+
+  <div>
+    <img [src]="product.image" class="w-full rounded shadow" />
+  </div>
+
+  <div>
+    <h1 class="text-3xl font-bold mb-2">{{ product.name }}</h1>
+    <p class="text-gray-600 mb-4">{{ product.desc }}</p>
+
+    <div class="text-2xl font-bold text-blue-600 mb-6">${{ product.price }}</div>
+
+    <button 
+  (click)="openModal()" 
+  class="mt-4 bg-blue-600 text-white px-4 py-2 rounded">
+  Agregar al carrito
+</button>
+
+<!-- MODAL -->
+<app-quantity-modal 
+  *ngIf="showModal"
+  [product]="product"
+  (close)="closeModal()"
+  (confirm)="addQty($event)">
+</app-quantity-modal>
+
+    <!-- 🟣 ESPECIFICACIONES -->
+    <div class="mt-10">
+      <h2 class="text-xl font-semibold mb-3">Especificaciones</h2>
+
+      <table class="w-full border border-gray-300 rounded">
+        <tbody>
+
+          <tr class="border-b">
+            <td class="p-2 font-medium">Pantalla</td>
+            <td class="p-2">{{ product.details?.pantalla }}</td>
+          </tr>
+
+          <tr class="border-b">
+            <td class="p-2 font-medium">Cámara</td>
+            <td class="p-2">{{ product.details?.camara }}</td>
+          </tr>
+
+          <tr class="border-b">
+            <td class="p-2 font-medium">Batería</td>
+            <td class="p-2">{{ product.details?.bateria }}</td>
+          </tr>
+
+          <tr class="border-b">
+            <td class="p-2 font-medium">Procesador</td>
+            <td class="p-2">{{ product.details?.procesador }}</td>
+          </tr>
+
+          <tr class="border-b">
+            <td class="p-2 font-medium">Almacenamiento</td>
+            <td class="p-2">{{ product.details?.almacenamiento }}</td>
+          </tr>
+
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+</div>
