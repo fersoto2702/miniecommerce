@@ -8,10 +8,12 @@ import { FormsModule } from '@angular/forms';
   templateUrl: './search-bar.component.html'
 })
 export class SearchBarComponent {
-  
-@Output() searchEvent = new EventEmitter<void>();
+
+  term: string = ''; // <-- aquí se guarda el texto del input
+
+  @Output() searchEvent = new EventEmitter<string>();
 
   emitSearch() {
-    this.searchEvent.emit();
+    this.searchEvent.emit(this.term);  // <-- enviamos el texto al padre
   }
 }
