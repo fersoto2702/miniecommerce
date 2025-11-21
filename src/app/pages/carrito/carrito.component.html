@@ -1,0 +1,28 @@
+<div class="max-w-4xl mx-auto p-6">
+  <h1 class="text-2xl font-bold mb-4">Carrito</h1>
+
+  <div *ngIf="items.length > 0; else empty">
+    <div *ngFor="let item of items" class="border p-4 rounded mb-3 flex justify-between">
+      <div>
+        <h2 class="font-semibold">{{ item.product.name }}</h2>
+        <p>Cantidad: {{ item.qty }}</p>
+        <p class="text-blue-600 font-bold">${{ item.product.price }}</p>
+      </div>
+      <button (click)="remove(item.product.id)" class="bg-red-500 text-white px-3 py-1 rounded">
+        Eliminar
+      </button>
+    </div>
+
+    <div class="text-right text-xl font-bold mt-5">
+      Total: ${{ total() }}
+    </div>
+
+    <button (click)="checkout()" class="mt-4 bg-green-600 text-white px-4 py-2 rounded">
+      Ir a pagar
+    </button>
+  </div>
+
+  <ng-template #empty>
+    <p class="text-gray-500">Tu carrito está vacío 🛒</p>
+  </ng-template>
+</div>

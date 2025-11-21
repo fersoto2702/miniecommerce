@@ -1,0 +1,41 @@
+<div class="w-64 h-screen bg-gray-900 text-white fixed left-0 top-0 p-6 shadow-xl flex flex-col">
+
+  <!-- Título -->
+  <h2 class="text-2xl font-extrabold mb-8 tracking-wide">
+    <span class="text-purple-400">Admin</span> Panel
+  </h2>
+
+  <!-- Navegación -->
+  <nav class="flex flex-col gap-4 text-lg">
+
+    <a
+      routerLink="/admin/dashboard"
+      routerLinkActive="text-purple-400 font-bold"
+      class="hover:text-purple-300 transition"
+    >
+      📊 Dashboard
+    </a>
+
+    <a
+      routerLink="/admin/products"
+      routerLinkActive="text-purple-400 font-bold"
+      class="hover:text-purple-300 transition"
+    >
+      📦 Productos
+    </a>
+
+    <a
+      routerLink="/admin/users"
+      routerLinkActive="text-purple-400 font-bold"
+      class="hover:text-purple-300 transition"
+    >
+      👥 Usuarios
+    </a>
+
+  </nav>
+
+  <!-- Línea divisoria -->
+  <div class="mt-auto border-t border-gray-700 pt-4 text-sm text-gray-400">
+  </div>
+
+</div>
