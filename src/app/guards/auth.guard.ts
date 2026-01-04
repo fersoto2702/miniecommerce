@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { CanActivate, Router } from '@angular/router';
+import { CanActivate, Router, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
 import { AuthService } from '../services/auth.service';
 
 @Injectable({
@@ -12,22 +12,36 @@ export class AuthGuard implements CanActivate {
     private router: Router
   ) {}
 
-  private isBrowser(): boolean {
-    return typeof window !== 'undefined' && typeof localStorage !== 'undefined';
-  }
+  canActivate(
+    route: ActivatedRouteSnapshot,
+    state: RouterStateSnapshot
+  ): boolean {
 
-  canActivate(): boolean {
+    // 🚫 PERMITIR SIEMPRE ASSETS (CRÍTICO)
+    if (state.url.startsWith('/assets')) {
+      return true;
+    }
 
-    // evitar errores en SSR/Vite
-    if (!this.isBrowser()) {
+    const token = localStorage.getItem('token');
+
+    // ❌ No hay token → no puede pasar
+    if (!token) {
+      this.auth.logout();
+      this.router.navigate(['/login']);
       return false;
     }
 
+    // Verificar si hay usuario cargado en memoria
     const user = this.auth.getCurrentUser();
 
     if (!user) {
-      this.router.navigate(['/login']);
-      return false;
+      this.auth.getProfile().subscribe({
+        next: () => {},
+        error: () => {
+          this.auth.logout();
+          this.router.navigate(['/login']);
+        }
+      });
     }
 
     return true;

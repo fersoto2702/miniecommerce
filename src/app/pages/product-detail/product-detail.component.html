@@ -1,64 +1,232 @@
-<div class="max-w-6xl mx-auto p-6 grid md:grid-cols-2 gap-10">
-
-  <div>
-    <img [src]="product.image" class="w-full rounded shadow" />
+<div *ngIf="product; else loading" class="max-w-6xl mx-auto p-6">
+  
+  <!-- Encabezado estilo Pokédex -->
+  <div class="mb-6 flex items-center gap-3">
+    <div class="flex gap-2">
+      <div class="w-4 h-4 bg-red-500 rounded-full shadow-lg animate-pulse"></div>
+      <div class="w-4 h-4 bg-yellow-400 rounded-full shadow-lg"></div>
+      <div class="w-4 h-4 bg-green-500 rounded-full shadow-lg"></div>
+    </div>
+    <div class="h-1 flex-grow bg-gradient-to-r from-red-500 via-yellow-400 to-blue-500 rounded-full"></div>
   </div>
 
-  <div>
-    <h1 class="text-3xl font-bold mb-2">{{ product.name }}</h1>
-    <p class="text-gray-600 mb-4">{{ product.desc }}</p>
+  <!-- Contenido principal con grid -->
+  <div class="grid md:grid-cols-2 gap-10">
 
-    <div class="text-2xl font-bold text-blue-600 mb-6">${{ product.price }}</div>
+    <!-- IMAGEN DEL PRODUCTO -->
+    <div class="relative group">
+      <!-- Contenedor estilo Pokédex -->
+      <div class="relative bg-gradient-to-br from-red-500 to-red-600 p-6 rounded-3xl shadow-2xl border-4 border-red-700">
+        
+        <!-- Pantalla del Pokédex -->
+        <div class="relative bg-gradient-to-br from-cyan-400 to-cyan-500 p-1 rounded-2xl">
+          <div class="bg-white rounded-xl overflow-hidden shadow-inner">
+            <img 
+              [src]="product.image" 
+              [alt]="product.name"
+              class="w-full h-auto object-contain p-8 group-hover:scale-110 transition-transform duration-500" 
+            />
+          </div>
+          
+          <!-- Reflejo de pantalla -->
+          <div class="absolute top-4 left-4 w-16 h-16 bg-white opacity-20 rounded-full blur-xl"></div>
+        </div>
 
-    <button 
-  (click)="openModal()" 
-  class="mt-4 bg-blue-600 text-white px-4 py-2 rounded">
-  Agregar al carrito
-</button>
+        <!-- Botones decorativos del Pokédex -->
+        <div class="mt-4 flex justify-center gap-3">
+          <div class="w-12 h-12 bg-blue-500 rounded-full shadow-lg border-4 border-blue-700"></div>
+          <div class="w-8 h-8 bg-red-400 rounded-full shadow-lg border-2 border-red-600 self-center"></div>
+          <div class="w-8 h-8 bg-yellow-400 rounded-full shadow-lg border-2 border-yellow-600 self-center"></div>
+          <div class="w-8 h-8 bg-green-400 rounded-full shadow-lg border-2 border-green-600 self-center"></div>
+        </div>
 
-<!-- MODAL -->
-<app-quantity-modal 
-  *ngIf="showModal"
-  [product]="product"
-  (close)="closeModal()"
-  (confirm)="addQty($event)">
-</app-quantity-modal>
+        <!-- Rejilla decorativa -->
+        <div class="absolute bottom-6 right-6 grid grid-cols-3 gap-1">
+          <div class="w-2 h-2 bg-red-800 rounded-full" *ngFor="let dot of [1,2,3,4,5,6]"></div>
+        </div>
+      </div>
 
-    <!-- 🟣 ESPECIFICACIONES -->
-    <div class="mt-10">
-      <h2 class="text-xl font-semibold mb-3">Especificaciones</h2>
-
-      <table class="w-full border border-gray-300 rounded">
-        <tbody>
-
-          <tr class="border-b">
-            <td class="p-2 font-medium">Pantalla</td>
-            <td class="p-2">{{ product.details?.pantalla }}</td>
-          </tr>
-
-          <tr class="border-b">
-            <td class="p-2 font-medium">Cámara</td>
-            <td class="p-2">{{ product.details?.camara }}</td>
-          </tr>
-
-          <tr class="border-b">
-            <td class="p-2 font-medium">Batería</td>
-            <td class="p-2">{{ product.details?.bateria }}</td>
-          </tr>
-
-          <tr class="border-b">
-            <td class="p-2 font-medium">Procesador</td>
-            <td class="p-2">{{ product.details?.procesador }}</td>
-          </tr>
-
-          <tr class="border-b">
-            <td class="p-2 font-medium">Almacenamiento</td>
-            <td class="p-2">{{ product.details?.almacenamiento }}</td>
-          </tr>
-
-        </tbody>
-      </table>
+      <!-- Badge "Capturalo" -->
+      <div class="absolute -top-3 -right-3 bg-gradient-to-r from-yellow-400 to-yellow-500 text-red-700 font-black text-sm px-4 py-2 rounded-full shadow-xl border-3 border-yellow-600 animate-bounce flex items-center gap-1">
+        <span>⚡</span>
+        <span>¡CÁPTURALO!</span>
+      </div>
     </div>
 
+    <!-- INFORMACIÓN DEL PRODUCTO -->
+    <div class="flex flex-col">
+      
+      <!-- Nombre del producto estilo Pokémon -->
+      <div class="mb-4">
+        <h1 class="text-4xl md:text-5xl font-black mb-2 bg-gradient-to-r from-red-600 via-yellow-500 to-blue-600 bg-clip-text text-transparent drop-shadow-lg" 
+            style="font-family: 'Arial Black', sans-serif; letter-spacing: 1px;">
+          {{ product.name }}
+        </h1>
+        
+        <!-- Línea decorativa -->
+        <div class="flex items-center gap-2 mt-2">
+          <div class="h-1 w-20 bg-gradient-to-r from-red-500 to-yellow-400 rounded-full"></div>
+          <div class="flex gap-1">
+            <div class="w-2 h-2 bg-red-500 rounded-full"></div>
+            <div class="w-2 h-2 bg-yellow-400 rounded-full"></div>
+            <div class="w-2 h-2 bg-blue-500 rounded-full"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Descripción -->
+      <div class="bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-gray-800 dark:to-gray-900 p-4 rounded-xl border-2 border-blue-200 dark:border-gray-700 mb-4">
+        <p class="text-gray-700 dark:text-gray-300 leading-relaxed">
+          {{ product.desc || 'Sin descripción disponible.' }}
+        </p>
+      </div>
+
+      <!-- Precio estilo Pokémon -->
+      <div class="bg-gradient-to-br from-yellow-50 to-amber-50 dark:from-gray-800 dark:to-gray-900 p-6 rounded-2xl border-4 border-yellow-400 mb-6 shadow-xl relative overflow-hidden">
+        <div class="absolute top-0 right-0 text-6xl opacity-10">💰</div>
+        <div class="relative z-10">
+          <p class="text-sm font-bold text-gray-600 dark:text-gray-400 mb-1 flex items-center gap-2">
+            <span>⭐</span>
+            <span>PRECIO ESPECIAL</span>
+          </p>
+          <div class="text-5xl font-black bg-gradient-to-r from-red-600 via-yellow-500 to-red-600 bg-clip-text text-transparent">
+            ${{ product.price }}
+          </div>
+        </div>
+      </div>
+
+      <!-- BOTÓN AGREGAR AL CARRITO -->
+      <button 
+        (click)="openModal()" 
+        class="relative w-full bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white font-black text-lg px-8 py-4 rounded-2xl shadow-2xl hover:shadow-red-500/50 transform hover:scale-105 transition-all duration-300 border-4 border-red-700 overflow-hidden group/btn">
+        
+        <!-- Efecto de brillo -->
+        <span class="absolute inset-0 bg-gradient-to-r from-transparent via-white to-transparent opacity-0 group-hover/btn:opacity-30 group-hover/btn:animate-shimmer"></span>
+        
+        <span class="relative flex items-center justify-center gap-3">
+          <span class="text-2xl">⚡</span>
+          <span>AGREGAR AL CARRITO</span>
+          <span class="text-2xl">⚡</span>
+        </span>
+      </button>
+
+      <!-- MODAL -->
+      <app-quantity-modal 
+        *ngIf="showModal"
+        [product]="product"
+        (close)="closeModal()"
+        (confirm)="addQty($event)">
+      </app-quantity-modal>
+
+      <!-- ESPECIFICACIONES ESTILO POKÉDEX -->
+      <div class="mt-10">
+        <div class="flex items-center gap-3 mb-4">
+          <h2 class="text-2xl font-black text-gray-800 dark:text-white" style="font-family: 'Arial Black', sans-serif;">
+            ESPECIFICACIONES
+          </h2>
+          <div class="h-1 flex-grow bg-gradient-to-r from-blue-500 to-transparent rounded-full"></div>
+        </div>
+
+        <!-- Tabla estilo Pokédex con diseño mejorado -->
+        <div class="bg-gradient-to-br from-white to-gray-50 dark:from-gray-800 dark:to-gray-900 rounded-2xl shadow-xl border-4 border-blue-500 overflow-hidden">
+          <table class="w-full">
+            <tbody>
+
+              <tr class="border-b-2 border-blue-200 dark:border-gray-700 hover:bg-blue-50 dark:hover:bg-gray-800 transition-colors">
+                <td class="p-4 font-bold text-blue-700 dark:text-blue-400 flex items-center gap-2">
+                  <span class="text-xl">📱</span>
+                  <span>Pantalla</span>
+                </td>
+                <td class="p-4 text-gray-700 dark:text-gray-300 font-medium">
+                  {{ product.details?.pantalla || '—' }}
+                </td>
+              </tr>
+
+              <tr class="border-b-2 border-blue-200 dark:border-gray-700 hover:bg-blue-50 dark:hover:bg-gray-800 transition-colors">
+                <td class="p-4 font-bold text-blue-700 dark:text-blue-400 flex items-center gap-2">
+                  <span class="text-xl">📷</span>
+                  <span>Cámara</span>
+                </td>
+                <td class="p-4 text-gray-700 dark:text-gray-300 font-medium">
+                  {{ product.details?.camara || '—' }}
+                </td>
+              </tr>
+
+              <tr class="border-b-2 border-blue-200 dark:border-gray-700 hover:bg-blue-50 dark:hover:bg-gray-800 transition-colors">
+                <td class="p-4 font-bold text-blue-700 dark:text-blue-400 flex items-center gap-2">
+                  <span class="text-xl">🔋</span>
+                  <span>Batería</span>
+                </td>
+                <td class="p-4 text-gray-700 dark:text-gray-300 font-medium">
+                  {{ product.details?.bateria || '—' }}
+                </td>
+              </tr>
+
+              <tr class="border-b-2 border-blue-200 dark:border-gray-700 hover:bg-blue-50 dark:hover:bg-gray-800 transition-colors">
+                <td class="p-4 font-bold text-blue-700 dark:text-blue-400 flex items-center gap-2">
+                  <span class="text-xl">⚙️</span>
+                  <span>Procesador</span>
+                </td>
+                <td class="p-4 text-gray-700 dark:text-gray-300 font-medium">
+                  {{ product.details?.procesador || '—' }}
+                </td>
+              </tr>
+
+              <tr class="hover:bg-blue-50 dark:hover:bg-gray-800 transition-colors">
+                <td class="p-4 font-bold text-blue-700 dark:text-blue-400 flex items-center gap-2">
+                  <span class="text-xl">💾</span>
+                  <span>Almacenamiento</span>
+                </td>
+                <td class="p-4 text-gray-700 dark:text-gray-300 font-medium">
+                  {{ product.details?.almacenamiento || '—' }}
+                </td>
+              </tr>
+
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
   </div>
 </div>
+
+<!-- LOADING ESTILO POKÉMON -->
+<ng-template #loading>
+  <div class="flex flex-col items-center justify-center py-20">
+    <!-- Pokéball girando -->
+    <div class="relative w-24 h-24 mb-6 animate-spin-slow">
+      <div class="w-full h-full rounded-full bg-gradient-to-br from-red-500 to-red-600 relative shadow-2xl">
+        <div class="absolute top-1/2 left-0 right-0 h-3 bg-gray-900 transform -translate-y-1/2"></div>
+        <div class="absolute top-1/2 left-1/2 w-10 h-10 bg-white rounded-full border-4 border-gray-900 transform -translate-x-1/2 -translate-y-1/2 shadow-lg"></div>
+      </div>
+    </div>
+    
+    <p class="text-2xl font-bold bg-gradient-to-r from-red-600 via-yellow-500 to-blue-600 bg-clip-text text-transparent animate-pulse">
+      Cargando producto...
+    </p>
+    <p class="text-sm text-gray-500 dark:text-gray-400 mt-2">
+      ⚡ Preparando tu Pokédex ⚡
+    </p>
+  </div>
+</ng-template>
+
+<style>
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+.animate-shimmer {
+  animation: shimmer 1.5s infinite;
+}
+
+@keyframes spin-slow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.animate-spin-slow {
+  animation: spin-slow 2s linear infinite;
+}
+</style>

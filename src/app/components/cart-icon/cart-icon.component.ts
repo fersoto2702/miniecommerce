@@ -10,8 +10,17 @@ import { CartService } from '../../services/cart.service';
   styleUrls: ['./cart-icon.component.css']
 })
 export class CartIconComponent {
+
   count = 0;
-  constructor(private cart:CartService) {
-    this.count = this.cart.getCart().length;
+
+  constructor(private cart: CartService) {
+
+    // 🔥 Esto escuchará actualizaciones del backend
+    this.cart.cartCount$.subscribe(c => {
+      this.count = c;
+    });
+
+    // 🔥 Cargar el contador inicial desde API
+    this.cart.loadCartCountFromAPI();
   }
 }

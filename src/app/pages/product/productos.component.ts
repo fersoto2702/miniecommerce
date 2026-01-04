@@ -8,21 +8,36 @@ import { SearchBarComponent } from '../../components/search-bar/search-bar.compo
   selector: 'app-products',
   standalone: true,
   imports: [CommonModule, ProductListComponent, SearchBarComponent],
-  templateUrl: './productos.component.html'   // o './productos.component.html' según tu archivo
+  templateUrl: './productos.component.html'
 })
 export class ProductsComponent implements OnInit {
 
   products: any[] = [];
   filtered: any[] = [];
+  loading = false;
 
   constructor(private ps: ProductService) {}
 
   ngOnInit() {
-    this.products = this.ps.getAll();
-    this.filtered = [...this.products];
+    this.loadProducts();
   }
 
-  // 👉 se llama cuando das Enter o clic en "Buscar"
+  loadProducts() {
+    this.loading = true;
+
+    this.ps.getAll().subscribe({
+      next: (res: any) => {
+        this.products = res.products || res;
+        this.filtered = [...this.products];
+        this.loading = false;
+      },
+      error: () => {
+        alert('Error al cargar productos');
+        this.loading = false;
+      }
+    });
+  }
+
   onSearch(term: string) {
     const q = term.toLowerCase().trim();
 
@@ -31,22 +46,9 @@ export class ProductsComponent implements OnInit {
       return;
     }
 
-    this.filtered = this.products.filter(p => {
-      const name      = (p.name ?? '').toLowerCase();
-      const category  = (p.category ?? '').toLowerCase();
-
-      // fields opcionales dentro de details
-      const pantalla  = (p.details?.pantalla ?? '').toLowerCase();
-      const camara    = (p.details?.camara ?? '').toLowerCase();
-      const proc      = (p.details?.procesador ?? '').toLowerCase();
-
-      return (
-        name.includes(q) ||
-        category.includes(q) ||
-        pantalla.includes(q) ||
-        camara.includes(q) ||
-        proc.includes(q)
-      );
-    });
+    this.filtered = this.products.filter(p =>
+      (p.name ?? '').toLowerCase().includes(q) ||
+      (p.category ?? '').toLowerCase().includes(q)
+    );
   }
 }

@@ -1,9 +1,132 @@
-<!-- Mostrar navbar solo si no estamos en login/register -->
-<app-navbar *ngIf="!hideLayout"></app-navbar>
+<!-- Navbar con animación de entrada -->
+<app-navbar *ngIf="!hideLayout && !isAdminRoute" class="animate-fade-in"></app-navbar>
 
-<div class="p-6 dark:bg-gray-900 min-h-screen text-gray-800 dark:text-gray-200">
+<!-- Contenedor principal con fondo Pokémon (SOLO para rutas públicas) -->
+<div class="relative min-h-screen overflow-hidden" *ngIf="!isAdminRoute">
+  
+  <!-- Fondo con gradiente Pokémon -->
+  <div class="absolute inset-0 bg-gradient-to-br from-red-50 via-yellow-50 to-blue-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900"></div>
+  
+  <!-- Patrón de fondo sutil con Pokéballs -->
+  <div class="absolute inset-0 opacity-[0.03] dark:opacity-[0.02]" style="background-image: repeating-linear-gradient(45deg, transparent, transparent 100px, #EE1515 100px, #EE1515 101px), repeating-linear-gradient(-45deg, transparent, transparent 100px, #FFDE00 100px, #FFDE00 101px);"></div>
+  
+  <!-- Pokéballs decorativas flotantes -->
+  <div class="absolute top-20 left-10 w-32 h-32 opacity-5 animate-float pointer-events-none hidden lg:block">
+    <div class="w-full h-full rounded-full bg-gradient-to-br from-red-500 to-red-600 relative">
+      <div class="absolute top-1/2 left-0 right-0 h-3 bg-gray-900 transform -translate-y-1/2"></div>
+      <div class="absolute top-1/2 left-1/2 w-10 h-10 bg-white rounded-full border-4 border-gray-900 transform -translate-x-1/2 -translate-y-1/2"></div>
+    </div>
+  </div>
+  
+  <div class="absolute bottom-40 right-20 w-24 h-24 opacity-5 animate-float-delayed pointer-events-none hidden lg:block">
+    <div class="w-full h-full rounded-full bg-gradient-to-br from-blue-500 to-blue-600 relative">
+      <div class="absolute top-1/2 left-0 right-0 h-2 bg-gray-900 transform -translate-y-1/2"></div>
+      <div class="absolute top-1/2 left-1/2 w-8 h-8 bg-white rounded-full border-3 border-gray-900 transform -translate-x-1/2 -translate-y-1/2"></div>
+    </div>
+  </div>
+  
+  <div class="absolute top-1/2 left-1/4 w-20 h-20 opacity-5 animate-float pointer-events-none hidden xl:block" style="animation-delay: 1s;">
+    <div class="w-full h-full rounded-full bg-gradient-to-br from-yellow-400 to-yellow-500 relative">
+      <div class="absolute top-1/2 left-0 right-0 h-2 bg-gray-900 transform -translate-y-1/2"></div>
+      <div class="absolute top-1/2 left-1/2 w-6 h-6 bg-white rounded-full border-2 border-gray-900 transform -translate-x-1/2 -translate-y-1/2"></div>
+    </div>
+  </div>
+
+  <!-- Estrellas decorativas (como en Pokémon) -->
+  <div class="absolute top-1/4 right-1/3 text-yellow-400 text-2xl opacity-20 animate-twinkle hidden lg:block">✨</div>
+  <div class="absolute top-2/3 left-1/2 text-yellow-300 text-xl opacity-20 animate-twinkle hidden lg:block" style="animation-delay: 0.5s;">⭐</div>
+  <div class="absolute bottom-1/4 right-1/4 text-yellow-400 text-3xl opacity-20 animate-twinkle hidden lg:block" style="animation-delay: 1s;">✨</div>
+
+  <!-- Contenido principal para rutas públicas -->
+  <div class="relative z-10 p-6 text-gray-800 dark:text-gray-200">
+    <div class="max-w-7xl mx-auto">
+      <div class="animate-slide-up">
+        <router-outlet></router-outlet>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Contenedor simple para rutas de admin (SIN fondo decorativo) -->
+<div *ngIf="isAdminRoute" class="min-h-screen">
   <router-outlet></router-outlet>
 </div>
 
-<!-- Mostrar footer solo si no estamos en login/register -->
-<app-footer *ngIf="!hideLayout"></app-footer>
+<!-- Footer con animación -->
+<app-footer *ngIf="!hideLayout && !isAdminRoute" class="animate-fade-in"></app-footer>
+
+<!-- Sistema de notificaciones Pokémon -->
+<app-notification></app-notification>
+
+<!-- Estilos para animaciones -->
+<style>
+/* Animación de fade in */
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.6s ease-out;
+}
+
+/* Animación de slide up */
+@keyframes slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-slide-up {
+  animation: slide-up 0.8s ease-out;
+}
+
+/* Animación flotante para Pokéballs */
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-20px) rotate(5deg);
+  }
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+.animate-float-delayed {
+  animation: float 8s ease-in-out infinite;
+  animation-delay: 2s;
+}
+
+/* Animación de parpadeo para estrellas */
+@keyframes twinkle {
+  0%, 100% {
+    opacity: 0.2;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.5;
+    transform: scale(1.2);
+  }
+}
+
+.animate-twinkle {
+  animation: twinkle 3s ease-in-out infinite;
+}
+
+/* Asegurar que el contenido principal ocupe el espacio necesario */
+.min-h-screen {
+  min-height: 100vh;
+}
+</style>

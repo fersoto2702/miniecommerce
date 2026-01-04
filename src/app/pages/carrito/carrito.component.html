@@ -1,28 +1,201 @@
-<div class="max-w-4xl mx-auto p-6">
-  <h1 class="text-2xl font-bold mb-4">Carrito</h1>
+<div class="max-w-6xl mx-auto p-6">
 
-  <div *ngIf="items.length > 0; else empty">
-    <div *ngFor="let item of items" class="border p-4 rounded mb-3 flex justify-between">
-      <div>
-        <h2 class="font-semibold">{{ item.product.name }}</h2>
-        <p>Cantidad: {{ item.qty }}</p>
-        <p class="text-blue-600 font-bold">${{ item.product.price }}</p>
-      </div>
-      <button (click)="remove(item.product.id)" class="bg-red-500 text-white px-3 py-1 rounded">
-        Eliminar
-      </button>
+  <!-- 🎮 ENCABEZADO ESTILO POKÉDEX -->
+  <div class="mb-8">
+    <!-- Luces LED del Pokédex -->
+    <div class="flex items-center gap-3 mb-4">
+      <div class="w-5 h-5 bg-red-500 rounded-full shadow-lg animate-pulse"></div>
+      <div class="w-5 h-5 bg-yellow-400 rounded-full shadow-lg"></div>
+      <div class="w-5 h-5 bg-green-500 rounded-full shadow-lg"></div>
+      <div class="h-1 flex-grow bg-gradient-to-r from-red-500 via-yellow-400 to-blue-500 rounded-full"></div>
     </div>
 
-    <div class="text-right text-xl font-bold mt-5">
-      Total: ${{ total() }}
-    </div>
+    <!-- Título principal -->
+    <h1 class="text-4xl md:text-5xl font-black mb-2 bg-gradient-to-r from-red-600 via-yellow-500 to-blue-600 bg-clip-text text-transparent flex items-center gap-3" 
+        style="font-family: 'Arial Black', sans-serif;">
+      <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/poke-ball.png" class="w-10 animate-bounce" />
+      CARRITO POKÉSHOP
+    </h1>
 
-    <button (click)="checkout()" class="mt-4 bg-green-600 text-white px-4 py-2 rounded">
-      Ir a pagar
-    </button>
+    <!-- Subtítulo -->
+    <div class="inline-block bg-gradient-to-r from-yellow-400 to-yellow-500 text-red-700 px-4 py-2 rounded-full text-sm font-bold border-3 border-yellow-600 shadow-lg">
+      <span class="flex items-center gap-2">
+        <span>⚡</span>
+        <span>TUS CAPTURAS</span>
+        <span>⚡</span>
+      </span>
+    </div>
   </div>
 
+  <div *ngIf="items.length > 0; else empty">
+
+    <!-- 🟡 PRODUCTOS DEL CARRITO -->
+    <div class="space-y-4 mb-8">
+      <div 
+        *ngFor="let item of items; let i = index" 
+        class="relative flex flex-col md:flex-row items-center gap-4 p-5 bg-gradient-to-br from-white to-gray-50 dark:from-gray-800 dark:to-gray-900 backdrop-blur rounded-2xl border-4 border-yellow-400 shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 overflow-hidden group"
+      >
+        
+        <!-- Número de Pokédex -->
+        <div class="absolute top-2 left-2 bg-red-500 text-white text-xs font-black px-3 py-1 rounded-full border-2 border-white shadow-lg">
+          #{{ i + 1 }}
+        </div>
+
+        <!-- Pokéball decorativa de fondo -->
+        <div class="absolute -right-10 -bottom-10 w-32 h-32 opacity-5 group-hover:opacity-10 transition-opacity">
+          <div class="w-full h-full rounded-full bg-gradient-to-br from-red-500 to-red-600 relative">
+            <div class="absolute top-1/2 left-0 right-0 h-3 bg-gray-900 transform -translate-y-1/2"></div>
+            <div class="absolute top-1/2 left-1/2 w-12 h-12 bg-white rounded-full border-4 border-gray-900 transform -translate-x-1/2 -translate-y-1/2"></div>
+          </div>
+        </div>
+
+        <!-- 📱 Imagen estilo Pokédex mejorada -->
+        <div class="relative group/img flex-shrink-0">
+          <div class="p-3 border-4 border-red-500 rounded-2xl bg-gradient-to-br from-cyan-400 to-cyan-500 shadow-lg group-hover:scale-105 transition-transform duration-300">
+            <div class="bg-white rounded-xl p-2 shadow-inner">
+              <img 
+                [src]="item.Product.image" 
+                alt="{{ item.Product.name }}"
+                class="w-24 h-24 md:w-28 md:h-28 object-contain"
+              />
+            </div>
+          </div>
+          <!-- Brillo al hover -->
+          <div class="absolute top-2 left-2 w-8 h-8 bg-white opacity-0 group-hover/img:opacity-30 rounded-full blur-lg transition-opacity"></div>
+        </div>
+
+        <!-- 📝 Información del producto -->
+        <div class="flex-1 text-center md:text-left relative z-10">
+          <h2 class="text-2xl font-black text-blue-700 dark:text-blue-400 mb-2 group-hover:text-red-600 transition-colors">
+            {{ item.Product.name }}
+          </h2>
+
+          <div class="flex flex-col md:flex-row items-center gap-3 text-sm md:text-base">
+            <!-- Cantidad -->
+            <div class="flex items-center gap-2 bg-blue-100 dark:bg-blue-900 px-4 py-2 rounded-full border-2 border-blue-300 dark:border-blue-700">
+              <span class="font-bold text-blue-700 dark:text-blue-300">Cantidad:</span>
+              <span class="font-black text-blue-900 dark:text-blue-100 text-lg">{{ item.quantity }}</span>
+              <span>📦</span>
+            </div>
+
+            <!-- Precio unitario -->
+            <div class="flex items-center gap-2 bg-yellow-100 dark:bg-yellow-900 px-4 py-2 rounded-full border-2 border-yellow-300 dark:border-yellow-700">
+              <span class="font-bold text-yellow-700 dark:text-yellow-300">Precio:</span>
+              <span class="font-black text-red-600 dark:text-red-400 text-xl">${{ item.Product.price }}</span>
+              <span>💰</span>
+            </div>
+          </div>
+
+          <!-- Subtotal -->
+          <div class="mt-3 inline-block bg-gradient-to-r from-green-500 to-emerald-600 text-white px-5 py-2 rounded-full font-black text-lg shadow-lg">
+            Subtotal: ${{ item.Product.price * item.quantity }}
+          </div>
+        </div>
+
+        <!-- ❌ Botón eliminar estilo Pokémon -->
+        <button 
+          (click)="removeItem(item.id)"
+          class="relative z-10 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white px-6 py-3 rounded-2xl font-black shadow-lg border-4 border-red-700 hover:scale-110 active:scale-95 transition-all duration-300 flex items-center gap-2"
+        >
+          <span class="text-xl">🗑️</span>
+          <span>ELIMINAR</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- 🎯 PANEL DE ACCIONES -->
+    <div class="bg-gradient-to-br from-red-500 to-red-600 dark:from-red-700 dark:to-red-800 p-6 rounded-3xl border-4 border-yellow-400 shadow-2xl">
+      
+      <!-- Línea decorativa -->
+      <div class="flex items-center gap-2 mb-6">
+        <div class="h-1 flex-grow bg-gradient-to-r from-yellow-400 to-transparent rounded-full"></div>
+        <div class="flex gap-1">
+          <div class="w-3 h-3 bg-yellow-400 rounded-full"></div>
+          <div class="w-3 h-3 bg-white rounded-full"></div>
+          <div class="w-3 h-3 bg-blue-400 rounded-full"></div>
+        </div>
+        <div class="h-1 flex-grow bg-gradient-to-l from-yellow-400 to-transparent rounded-full"></div>
+      </div>
+
+      <!-- Total -->
+      <div class="text-center mb-6">
+        <p class="text-white text-lg font-bold mb-2 flex items-center justify-center gap-2">
+          <span>⭐</span>
+          <span>TOTAL A PAGAR</span>
+          <span>⭐</span>
+        </p>
+        <div class="text-5xl md:text-6xl font-black bg-gradient-to-r from-yellow-300 via-yellow-100 to-yellow-300 bg-clip-text text-transparent drop-shadow-lg">
+          ${{ total() }}
+        </div>
+      </div>
+
+      <!-- Botones de acción -->
+      <div class="flex flex-col md:flex-row gap-4 justify-center">
+        <!-- Botón Vaciar Carrito -->
+        <button 
+          (click)="clearCart()"
+          class="bg-orange-500 hover:bg-orange-600 text-white px-6 py-3 rounded-2xl font-black text-lg shadow-lg border-4 border-white hover:scale-105 active:scale-95 transition-all duration-300 flex items-center justify-center gap-2"
+        >
+          <span class="text-2xl">🗑️</span>
+          <span>VACIAR CARRITO</span>
+        </button>
+
+        <!-- Botón Ir a Pagar -->
+        <button 
+          (click)="checkout()"
+          class="bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white px-8 py-3 rounded-2xl font-black text-xl shadow-2xl border-4 border-white hover:scale-105 active:scale-95 transition-all duration-300 flex items-center justify-center gap-3"
+        >
+          <span class="text-3xl animate-bounce">💸</span>
+          <span>IR A PAGAR</span>
+          <span class="text-3xl animate-bounce" style="animation-delay: 0.2s;">⚡</span>
+        </button>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- 🪁 CARRITO VACÍO -->
   <ng-template #empty>
-    <p class="text-gray-500">Tu carrito está vacío 🛒</p>
+    <div class="text-center py-20">
+      <!-- Pokéball grande -->
+      <div class="inline-block mb-8 animate-bounce">
+        <div class="w-32 h-32 mx-auto rounded-full bg-gradient-to-br from-red-500 to-red-600 relative shadow-2xl border-4 border-gray-800">
+          <div class="absolute top-1/2 left-0 right-0 h-4 bg-gray-900 transform -translate-y-1/2"></div>
+          <div class="absolute top-1/2 left-1/2 w-14 h-14 bg-white rounded-full border-4 border-gray-900 transform -translate-x-1/2 -translate-y-1/2"></div>
+        </div>
+      </div>
+
+      <h2 class="text-3xl font-black text-gray-700 dark:text-gray-300 mb-4">
+        ¡Tu carrito está vacío, Entrenador!
+      </h2>
+      
+      <p class="text-xl text-gray-500 dark:text-gray-400 mb-8 flex items-center justify-center gap-2">
+        <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/repel.png" class="w-8" />
+        <span>No has capturado ningún teléfono aún</span>
+        <span>🛒</span>
+      </p>
+
+      <!-- Botón para ir a productos -->
+      <a 
+        routerLink="/products"
+        class="inline-flex items-center gap-3 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white px-8 py-4 rounded-2xl font-black text-lg shadow-2xl border-4 border-red-700 hover:scale-105 transition-all duration-300"
+      >
+        <span class="text-2xl">⚡</span>
+        <span>EXPLORAR PRODUCTOS</span>
+        <span class="text-2xl">⚡</span>
+      </a>
+    </div>
   </ng-template>
+
 </div>
+
+<style>
+@keyframes bounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+</style>

@@ -1,23 +1,30 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { AuthService } from '../../../services/auth.service';
 
 @Component({
   selector: 'app-admin-sidebar',
   standalone: true,
-  imports: [RouterLink, RouterLinkActive],
-  templateUrl: './admin-sidebar.component.html',
-  styleUrls: ['./admin-sidebar.component.css']
+  imports: [CommonModule, RouterLink, RouterLinkActive],
+  templateUrl: './admin-sidebar.component.html'
 })
-export class AdminSidebarComponent {
+export class AdminSidebarComponent implements OnInit {
 
   user: any = null;
+  loading = true;
 
   constructor(
     private auth: AuthService,
     private router: Router
-  ) {
-    this.user = this.auth.getCurrentUser(); // Obtenemos usuario actual
+  ) {}
+
+  ngOnInit() {
+    this.auth.user$.subscribe(u => {
+      this.user = u;
+      this.loading = false;
+      console.log('ADMIN USER:', this.user);
+    });
   }
 
   logout() {

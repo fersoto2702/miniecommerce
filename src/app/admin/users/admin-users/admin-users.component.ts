@@ -1,6 +1,7 @@
-import { Component } from '@angular/core';
-import { AdminSidebarComponent } from '../../components/admin-sidebar/admin-sidebar.component';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { AdminSidebarComponent } from '../../components/admin-sidebar/admin-sidebar.component';
+import { UserService } from '../../../services/user.service';
 
 @Component({
   selector: 'app-admin-users',
@@ -8,9 +9,33 @@ import { CommonModule } from '@angular/common';
   imports: [CommonModule, AdminSidebarComponent],
   templateUrl: './admin-users.component.html'
 })
-export class AdminUsersComponent {
-  users = [
-    { id: 1, name: 'Kenny', email: 'user@mail.com', role: 'user' },
-    { id: 2, name: 'Admin', email: 'admin@mail.com', role: 'admin' }
-  ];
+export class AdminUsersComponent implements OnInit {
+
+  users: any[] = [];
+  loading = false;
+
+  constructor(private userService: UserService) {}
+
+  ngOnInit() {
+    this.loadUsers();
+  }
+
+  // =================================================
+  // 🔵 Cargar usuarios desde el BACKEND
+  // GET /api/auth/users  (solo admin)
+  // =================================================
+  loadUsers() {
+    this.loading = true;
+
+    this.userService.getAllUsers().subscribe({
+      next: (res: any) => {
+        this.users = res.users || [];
+        this.loading = false;
+      },
+      error: () => {
+        alert('Error al cargar usuarios (¿Eres admin?)');
+        this.loading = false;
+      }
+    });
+  }
 }

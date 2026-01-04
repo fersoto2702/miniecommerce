@@ -1,13 +1,233 @@
-<div class="max-w-md mx-auto p-6 bg-white dark:bg-gray-800 rounded">
-  <h1 class="text-2xl font-bold mb-4">Checkout</h1>
-  <p class="mb-4">Total: <strong>${{ total }}</strong></p>
+<div class="min-h-screen flex items-center justify-center p-4">
+  
+  <div class="w-full max-w-2xl">
+    
+    <!-- Header con temática Pokémon -->
+    <div class="text-center mb-6">
+      <div class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-full shadow-2xl shadow-yellow-500/50 mb-4 animate-bounce-slow">
+        <span class="text-4xl">💳</span>
+      </div>
+      <h1 class="text-4xl font-black bg-gradient-to-r from-yellow-400 via-orange-500 to-red-500 bg-clip-text text-transparent mb-2">
+        Finalizar Compra
+      </h1>
+      <p class="text-gray-600 dark:text-gray-400 font-medium">Completa tu pedido y captura tus productos</p>
+    </div>
 
-  <input [(ngModel)]="name" name="n" placeholder="Nombre en tarjeta" class="w-full mb-2 p-2 border rounded" />
-  <input [(ngModel)]="card" name="c" placeholder="Número de tarjeta" class="w-full mb-2 p-2 border rounded" />
-  <div class="flex gap-2 mb-4">
-    <input [(ngModel)]="exp" name="e" placeholder="MM/AA" class="flex-1 p-2 border rounded" />
-    <input [(ngModel)]="cvv" name="v" placeholder="CVV" class="w-24 p-2 border rounded" />
+    <!-- Contenedor principal -->
+    <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl overflow-hidden border-2 border-yellow-400 dark:border-yellow-600">
+      
+      <!-- Header del card con total -->
+      <div class="bg-gradient-to-r from-yellow-400 via-orange-400 to-red-400 p-6 relative overflow-hidden">
+        <!-- Pokéball decorativa -->
+        <div class="absolute -right-8 -top-8 w-32 h-32 opacity-10">
+          <div class="w-full h-full rounded-full bg-white relative">
+            <div class="absolute top-1/2 left-0 right-0 h-2 bg-gray-900 -translate-y-1/2"></div>
+            <div class="absolute top-1/2 left-1/2 w-6 h-6 bg-white rounded-full border-4 border-gray-900 -translate-x-1/2 -translate-y-1/2"></div>
+          </div>
+        </div>
+
+        <div class="relative flex items-center justify-between">
+          <div>
+            <p class="text-white/90 text-sm font-bold mb-1">Total a pagar</p>
+            <p class="text-4xl font-black text-white drop-shadow-lg">${{ total }}</p>
+          </div>
+          <div class="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center">
+            <span class="text-3xl">⚡</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Formulario de pago -->
+      <div class="p-6 space-y-5">
+        
+        <!-- Sección: Información de la tarjeta -->
+        <div>
+          <div class="flex items-center gap-2 mb-4">
+            <div class="w-8 h-8 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center">
+              <span class="text-lg">💳</span>
+            </div>
+            <h2 class="text-lg font-black text-gray-800 dark:text-white">Información de Pago</h2>
+          </div>
+
+          <!-- Nombre en tarjeta -->
+          <div class="mb-4">
+            <label for="cardName" class="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">
+              Nombre en la tarjeta
+            </label>
+            <input
+              [(ngModel)]="name"
+              name="n"
+              id="cardName"
+              type="text"
+              placeholder="Ash Ketchum"
+              class="w-full p-3 rounded-lg border-2 border-gray-300 dark:border-gray-600 
+                     bg-white dark:bg-gray-700 text-gray-900 dark:text-white
+                     placeholder-gray-400 dark:placeholder-gray-500
+                     focus:ring-2 focus:ring-yellow-500 focus:border-transparent 
+                     outline-none transition-all font-medium"
+              required
+            />
+          </div>
+
+          <!-- Número de tarjeta -->
+          <div class="mb-4">
+            <label for="cardNumber" class="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">
+              Número de tarjeta
+            </label>
+            <div class="relative">
+              <input
+                [(ngModel)]="card"
+                name="c"
+                id="cardNumber"
+                type="text"
+                placeholder="1234 5678 9012 3456"
+                maxlength="19"
+                class="w-full p-3 pr-12 rounded-lg border-2 border-gray-300 dark:border-gray-600 
+                       bg-white dark:bg-gray-700 text-gray-900 dark:text-white
+                       placeholder-gray-400 dark:placeholder-gray-500
+                       focus:ring-2 focus:ring-yellow-500 focus:border-transparent 
+                       outline-none transition-all font-mono font-semibold tracking-wider"
+                required
+              />
+              <!-- Icono de tarjeta -->
+              <div class="absolute right-3 top-1/2 -translate-y-1/2 text-2xl opacity-50">
+                💳
+              </div>
+            </div>
+          </div>
+
+          <!-- Fecha y CVV -->
+          <div class="grid grid-cols-2 gap-4">
+            <!-- Expiración -->
+            <div>
+              <label for="expiry" class="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">
+                Fecha de expiración
+              </label>
+              <input
+                [(ngModel)]="exp"
+                name="e"
+                id="expiry"
+                type="text"
+                placeholder="MM/AA"
+                maxlength="5"
+                class="w-full p-3 rounded-lg border-2 border-gray-300 dark:border-gray-600 
+                       bg-white dark:bg-gray-700 text-gray-900 dark:text-white
+                       placeholder-gray-400 dark:placeholder-gray-500
+                       focus:ring-2 focus:ring-yellow-500 focus:border-transparent 
+                       outline-none transition-all font-mono font-semibold text-center"
+                required
+              />
+            </div>
+
+            <!-- CVV -->
+            <div>
+              <label for="cvv" class="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">
+                CVV
+              </label>
+              <input
+                [(ngModel)]="cvv"
+                name="v"
+                id="cvv"
+                type="text"
+                placeholder="123"
+                maxlength="4"
+                class="w-full p-3 rounded-lg border-2 border-gray-300 dark:border-gray-600 
+                       bg-white dark:bg-gray-700 text-gray-900 dark:text-white
+                       placeholder-gray-400 dark:placeholder-gray-500
+                       focus:ring-2 focus:ring-yellow-500 focus:border-transparent 
+                       outline-none transition-all font-mono font-semibold text-center"
+                required
+              />
+            </div>
+          </div>
+        </div>
+
+        <!-- Info de seguridad -->
+        <div class="bg-green-50 dark:bg-green-900/20 border-l-4 border-green-500 p-4 rounded-lg">
+          <div class="flex items-start gap-3">
+            <span class="text-2xl">🔒</span>
+            <div>
+              <p class="text-sm font-bold text-green-800 dark:text-green-300 mb-1">
+                Pago 100% Seguro
+              </p>
+              <p class="text-xs text-green-700 dark:text-green-400">
+                Tu información está protegida con encriptación de nivel bancario
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Botón de pagar -->
+        <button
+          (click)="pay()"
+          class="group relative w-full bg-gradient-to-r from-green-500 to-emerald-600 
+                 hover:from-green-600 hover:to-emerald-700 text-white font-black 
+                 py-4 rounded-xl shadow-lg shadow-green-500/30 
+                 hover:shadow-xl hover:shadow-green-500/50 
+                 transform hover:scale-105 active:scale-95 
+                 transition-all duration-200 overflow-hidden">
+          
+          <!-- Efecto de brillo -->
+          <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700"></div>
+          
+          <span class="relative flex items-center justify-center gap-2 text-lg">
+            <span class="text-2xl">✨</span>
+            Completar Compra
+            <span class="text-2xl">✨</span>
+          </span>
+        </button>
+
+        <!-- Separador -->
+        <div class="relative my-6">
+          <div class="absolute inset-0 flex items-center">
+            <div class="w-full border-t-2 border-gray-200 dark:border-gray-700"></div>
+          </div>
+          <div class="relative flex justify-center">
+            <span class="bg-white dark:bg-gray-800 px-4 text-sm font-bold text-gray-500 dark:text-gray-400">
+              O paga con
+            </span>
+          </div>
+        </div>
+
+        <!-- Botón de PayPal -->
+        <div id="paypal-button-container" class="rounded-lg overflow-hidden"></div>
+
+        <!-- Métodos de pago aceptados -->
+        <div class="text-center pt-4">
+          <p class="text-xs text-gray-500 dark:text-gray-400 mb-2 font-semibold">Aceptamos</p>
+          <div class="flex items-center justify-center gap-3 flex-wrap">
+            <div class="bg-gray-100 dark:bg-gray-700 px-3 py-1.5 rounded-lg text-xs font-bold text-gray-700 dark:text-gray-300">
+              💳 Visa
+            </div>
+            <div class="bg-gray-100 dark:bg-gray-700 px-3 py-1.5 rounded-lg text-xs font-bold text-gray-700 dark:text-gray-300">
+              💳 Mastercard
+            </div>
+            <div class="bg-gray-100 dark:bg-gray-700 px-3 py-1.5 rounded-lg text-xs font-bold text-gray-700 dark:text-gray-300">
+              💙 PayPal
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Información adicional -->
+    <div class="mt-6 text-center">
+      <p class="text-sm text-gray-600 dark:text-gray-400">
+        🎮 <span class="font-bold text-yellow-600 dark:text-yellow-400">¡Gracias por tu compra!</span> Tu pedido será procesado de inmediato
+      </p>
+    </div>
+
   </div>
-
-  <button (click)="pay()" class="bg-green-600 text-white w-full py-2 rounded">Pagar (simulado)</button>
 </div>
+
+<style>
+@keyframes bounce-slow {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+.animate-bounce-slow {
+  animation: bounce-slow 2s ease-in-out infinite;
+}
+</style>

@@ -1,0 +1,208 @@
+<!-- Contenedor de notificaciones Pokémon mejorado -->
+<div class="fixed top-4 right-4 z-[9999] flex flex-col gap-3 w-96 max-w-[calc(100vw-2rem)]">
+  <div *ngFor="let notification of notifications; trackBy: trackByFn" 
+       class="notification-card relative flex items-start gap-3 p-4 rounded-xl bg-white shadow-2xl border-l-[6px] overflow-hidden transform transition-all duration-300 hover:scale-[1.02] hover:shadow-3xl"
+       [ngClass]="{
+         'border-l-green-500 bg-gradient-to-br from-green-50 via-white to-emerald-50': notification.type === 'success',
+         'border-l-red-500 bg-gradient-to-br from-red-50 via-white to-rose-50': notification.type === 'error',
+         'border-l-amber-500 bg-gradient-to-br from-amber-50 via-white to-yellow-50': notification.type === 'warning',
+         'border-l-blue-500 bg-gradient-to-br from-blue-50 via-white to-cyan-50': notification.type === 'info'
+       }"
+       [@slideIn]
+       [@fadeOut]>
+    
+    <!-- Pokéball decorativa animada -->
+    <div class="absolute -right-8 -bottom-8 w-24 h-24 opacity-5 rotate-12 pointer-events-none animate-spin-slow">
+      <div class="w-full h-full rounded-full relative"
+           [ngClass]="{
+             'bg-gradient-to-br from-green-400 to-emerald-600': notification.type === 'success',
+             'bg-gradient-to-br from-red-400 to-rose-600': notification.type === 'error',
+             'bg-gradient-to-br from-amber-400 to-yellow-600': notification.type === 'warning',
+             'bg-gradient-to-br from-blue-400 to-cyan-600': notification.type === 'info'
+           }">
+        <div class="absolute top-1/2 left-0 right-0 h-2 bg-gray-900 -translate-y-1/2"></div>
+        <div class="absolute top-1/2 left-1/2 w-6 h-6 bg-white rounded-full border-4 border-gray-900 -translate-x-1/2 -translate-y-1/2 shadow-lg"></div>
+      </div>
+    </div>
+
+    <!-- Partículas decorativas -->
+    <div class="absolute inset-0 pointer-events-none overflow-hidden">
+      <div class="particle particle-1" 
+           [ngClass]="{
+             'bg-green-400': notification.type === 'success',
+             'bg-red-400': notification.type === 'error',
+             'bg-amber-400': notification.type === 'warning',
+             'bg-blue-400': notification.type === 'info'
+           }"></div>
+      <div class="particle particle-2"
+           [ngClass]="{
+             'bg-green-400': notification.type === 'success',
+             'bg-red-400': notification.type === 'error',
+             'bg-amber-400': notification.type === 'warning',
+             'bg-blue-400': notification.type === 'info'
+           }"></div>
+      <div class="particle particle-3"
+           [ngClass]="{
+             'bg-green-400': notification.type === 'success',
+             'bg-red-400': notification.type === 'error',
+             'bg-amber-400': notification.type === 'warning',
+             'bg-blue-400': notification.type === 'info'
+           }"></div>
+    </div>
+
+    <!-- Icono principal con emoji Pokémon -->
+    <div class="relative flex items-center justify-center w-12 h-12 rounded-xl flex-shrink-0 z-10 shadow-lg transform transition-transform duration-300 hover:scale-110"
+         [ngClass]="{
+           'bg-gradient-to-br from-green-400 to-emerald-600': notification.type === 'success',
+           'bg-gradient-to-br from-red-400 to-rose-600': notification.type === 'error',
+           'bg-gradient-to-br from-amber-400 to-yellow-600': notification.type === 'warning',
+           'bg-gradient-to-br from-blue-400 to-cyan-600': notification.type === 'info'
+         }">
+      <span class="text-3xl animate-bounce-slow drop-shadow-lg">
+        {{ getPokemonEmoji(notification.type) }}
+      </span>
+      
+      <!-- Badge pequeño con icono de estado -->
+      <span class="absolute -bottom-1 -right-1 flex items-center justify-center w-6 h-6 text-xs font-black text-white rounded-full border-2 border-white shadow-md"
+            [ngClass]="{
+              'bg-green-600': notification.type === 'success',
+              'bg-red-600': notification.type === 'error',
+              'bg-amber-600': notification.type === 'warning',
+              'bg-blue-600': notification.type === 'info'
+            }">
+        {{ getIcon(notification.type) }}
+      </span>
+    </div>
+
+    <!-- Contenido del mensaje -->
+    <div class="flex-1 min-w-0 z-10 pt-1">
+      <!-- Título según el tipo -->
+      <div class="font-black text-sm mb-1 tracking-wide uppercase"
+           [ngClass]="{
+             'text-green-700': notification.type === 'success',
+             'text-red-700': notification.type === 'error',
+             'text-amber-700': notification.type === 'warning',
+             'text-blue-700': notification.type === 'info'
+           }">
+        {{ getTitle(notification.type) }}
+      </div>
+      
+      <!-- Mensaje -->
+      <div class="text-sm leading-relaxed text-gray-700 font-medium break-words">
+        {{ notification.message }}
+      </div>
+    </div>
+
+    <!-- Botón cerrar mejorado -->
+    <button 
+      (click)="removeNotification(notification.id)"
+      class="relative z-10 flex items-center justify-center w-8 h-8 text-base font-bold text-gray-500 bg-gray-100 rounded-lg hover:bg-gray-200 hover:text-gray-700 hover:scale-110 active:scale-95 transition-all flex-shrink-0 shadow-sm"
+      aria-label="Cerrar notificación">
+      ✕
+    </button>
+
+    <!-- Barra de progreso mejorada -->
+    <div *ngIf="notification.duration" 
+         class="absolute bottom-0 left-0 right-0 h-1 bg-gray-200 overflow-hidden">
+      <div class="h-full origin-left shadow-sm"
+           [ngClass]="{
+             'bg-gradient-to-r from-green-400 to-emerald-600': notification.type === 'success',
+             'bg-gradient-to-r from-red-400 to-rose-600': notification.type === 'error',
+             'bg-gradient-to-r from-amber-400 to-yellow-600': notification.type === 'warning',
+             'bg-gradient-to-r from-blue-400 to-cyan-600': notification.type === 'info'
+           }"
+           [style.animation]="'progress-bar ' + notification.duration + 'ms linear forwards'">
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+/* Animaciones */
+@keyframes progress-bar {
+  from { transform: scaleX(1); }
+  to { transform: scaleX(0); }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0) rotate(0deg); opacity: 0; }
+  10% { opacity: 1; }
+  50% { transform: translateY(-100px) rotate(180deg); opacity: 0.5; }
+  100% { transform: translateY(-150px) rotate(360deg); opacity: 0; }
+}
+
+@keyframes spin-slow {
+  from { transform: rotate(12deg); }
+  to { transform: rotate(372deg); }
+}
+
+@keyframes bounce-slow {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+/* Clases de animación */
+.animate-spin-slow {
+  animation: spin-slow 20s linear infinite;
+}
+
+.animate-bounce-slow {
+  animation: bounce-slow 2s ease-in-out infinite;
+}
+
+/* Partículas flotantes */
+.particle {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  opacity: 0;
+  animation: float 4s ease-in-out infinite;
+}
+
+.particle-1 {
+  top: 20%;
+  left: 10%;
+  animation-delay: 0s;
+}
+
+.particle-2 {
+  top: 60%;
+  left: 80%;
+  animation-delay: 1.5s;
+}
+
+.particle-3 {
+  top: 40%;
+  left: 50%;
+  animation-delay: 3s;
+}
+
+/* Sombra personalizada */
+.shadow-3xl {
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+}
+
+/* Transición de entrada */
+.notification-card {
+  animation: slideIn 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(120%) scale(0.8);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0) scale(1);
+    opacity: 1;
+  }
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+  .notification-card {
+    font-size: 0.875rem;
+  }
+}
+</style>

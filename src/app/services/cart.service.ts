@@ -1,70 +1,86 @@
 import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject } from 'rxjs';
+import { tap } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CartService {
 
-  private storageKey = 'cart_items';
+  private apiURL = 'http://localhost:4000/api/cart';
+  private orderURL = 'http://localhost:4000/api/orders';
+
   private cartCountSubject = new BehaviorSubject<number>(0);
-  cartCount$ = this.cartCountSubject.asObservable(); // <-- LO QUE EL NAVBAR VA A ESCUCHAR
+  cartCount$ = this.cartCountSubject.asObservable();
 
-  constructor() {
-    this.updateCounter(); // inicializa el contador al abrir la app
+  constructor(private http: HttpClient) {
+    // ❌ NO cargar carrito aquí
   }
 
-  private isBrowser(): boolean {
-    return typeof window !== 'undefined' && typeof localStorage !== 'undefined';
-  }
-
-  private updateCounter() {
-    if (!this.isBrowser()) return;
-    const cart = this.getCart();
-    const count = cart.reduce((sum: number, item: any) => sum + item.qty, 0);
-    this.cartCountSubject.next(count);
-  }
-
+  // ============================================================
+  // 🔹 Obtener carrito desde backend
+  // ============================================================
   getCart() {
-    if (!this.isBrowser()) return [];
-    const raw = localStorage.getItem(this.storageKey);
-    return raw ? JSON.parse(raw) : [];
+    return this.http.get<any>(this.apiURL);
   }
 
+  // ============================================================
+  // 🔹 Agregar producto al carrito
+  // ============================================================
   add(product: any, qty: number = 1) {
-    if (!this.isBrowser()) return;
+    return this.http.post(`${this.apiURL}/add`, {
+      productId: product.id,
+      quantity: qty
+    }).pipe(
+      tap(() => this.loadCartCountFromAPI())
+    );
+  }
 
-    const cart = this.getCart();
-    const existing = cart.find((item: any) => item.product.id === product.id);
+  // ============================================================
+  // 🔹 Eliminar item
+  // ============================================================
+  remove(cartItemId: number) {
+    return this.http.delete(`${this.apiURL}/${cartItemId}`)
+      .pipe(tap(() => this.loadCartCountFromAPI()));
+  }
 
-    if (existing) {
-      existing.qty += qty;
-    } else {
-      cart.push({ product, qty });
+  // ============================================================
+  // 🔹 Vaciar carrito
+  // ============================================================
+  clear() {
+    return this.http.delete(this.apiURL)
+      .pipe(tap(() => this.loadCartCountFromAPI()));
+  }
+
+  // ============================================================
+  // 🔹 Cargar contador SOLO si hay token
+  // ============================================================
+  loadCartCountFromAPI() {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      this.cartCountSubject.next(0);
+      return;
     }
 
-    localStorage.setItem(this.storageKey, JSON.stringify(cart));
-    this.updateCounter(); // <-- MUY IMPORTANTE
+    this.getCart().subscribe({
+      next: (res: any) => {
+        const count = res.items.reduce(
+          (sum: number, item: any) => sum + item.quantity,
+          0
+        );
+        this.cartCountSubject.next(count);
+      },
+      error: () => {
+        this.cartCountSubject.next(0);
+      }
+    });
   }
 
-  remove(productId: number) {
-    if (!this.isBrowser()) return;
-    const filtered = this.getCart().filter((item: any) => item.product.id !== productId);
-    localStorage.setItem(this.storageKey, JSON.stringify(filtered));
-    this.updateCounter(); // <-- MUY IMPORTANTE
-  }
-
-  clear() {
-    if (!this.isBrowser()) return;
-    localStorage.removeItem(this.storageKey);
-    this.updateCounter(); // <-- MUY IMPORTANTE
-  }
-
-  total() {
-    if (!this.isBrowser()) return 0;
-    return this.getCart().reduce(
-      (sum: number, item: any) => sum + (item.product.price * item.qty),
-      0
-    );
+  // ============================================================
+  // 🔹 Crear orden
+  // ============================================================
+  createOrderFromCart() {
+    return this.http.post(`${this.orderURL}/from-cart`, {});
   }
 }

@@ -1,65 +1,170 @@
-<div class="flex justify-center items-center min-h-[80vh] px-4">
+<div class="flex justify-center items-center min-h-screen px-4 py-4 relative overflow-hidden">
+  
+  <!-- Fondo con gradiente Pokémon -->
+  <div class="absolute inset-0 bg-gradient-to-br from-red-500 via-yellow-400 to-blue-500 opacity-20"></div>
 
-  <div class="w-full max-w-md bg-white dark:bg-gray-900 shadow-lg rounded-2xl p-8 border border-gray-100 dark:border-gray-700">
+  <!-- Contenedor principal estilo Pokédex (ultra compacto) -->
+  <div class="relative z-10 w-full max-w-md">
+    
+    <!-- Panel superior del Pokédex -->
+    <div class="bg-gradient-to-br from-red-600 to-red-700 rounded-t-2xl p-3 border-3 border-red-800">
+      
+      <!-- Luces LED del Pokédex -->
+      <div class="flex items-center gap-1.5 mb-2">
+        <div class="w-3 h-3 bg-blue-400 rounded-full border-2 border-blue-600 shadow-lg animate-pulse"></div>
+        <div class="w-2.5 h-2.5 bg-red-400 rounded-full border border-red-600"></div>
+        <div class="w-2.5 h-2.5 bg-yellow-400 rounded-full border border-yellow-600"></div>
+        <div class="w-2.5 h-2.5 bg-green-400 rounded-full border border-green-600"></div>
+      </div>
 
-    <!-- Título -->
-    <h1 class="text-3xl font-bold text-center text-gray-800 dark:text-gray-100 mb-6">
-      Bienvenido 👋
-    </h1>
-
-    <!-- Subtítulo -->
-    <p class="text-center text-gray-500 dark:text-gray-400 mb-8">
-      Inicia sesión para continuar
-    </p>
-
-    <!-- Email -->
-    <label class="block mb-1 text-gray-700 dark:text-gray-300 font-medium">Email</label>
-    <div class="relative mb-5">
-      <input
-        [(ngModel)]="email"
-        name="email"
-        type="email"
-        placeholder="tu@email.com"
-        class="w-full py-3 pl-4 pr-10 border rounded-lg bg-gray-50 dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-800 dark:text-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
-      />
+      <!-- Logo y título -->
+      <div class="text-center">
+        <div class="inline-block mb-1.5">
+          <div class="w-12 h-12 mx-auto rounded-full bg-gradient-to-br from-white to-gray-200 relative shadow-xl border-3 border-gray-800">
+            <div class="absolute top-1/2 left-0 right-0 h-1.5 bg-gray-900 transform -translate-y-1/2"></div>
+            <div class="absolute top-1/2 left-1/2 w-4 h-4 bg-white rounded-full border-2 border-gray-900 transform -translate-x-1/2 -translate-y-1/2"></div>
+          </div>
+        </div>
+        
+        <h1 class="text-3xl font-black text-white mb-1.5 drop-shadow-lg" 
+            style="font-family: 'Arial Black', sans-serif; letter-spacing: 1px;">
+          ¡BIENVENIDO!
+        </h1>
+        
+        <div class="inline-block bg-yellow-400 text-red-700 px-2.5 py-0.5 rounded-full text-sm font-black border-2 border-yellow-500">
+          ⚡ ENTRENADOR ⚡
+        </div>
+      </div>
     </div>
 
-    <!-- Password -->
-    <label class="block mb-1 text-gray-700 dark:text-gray-300 font-medium">Contraseña</label>
-    <div class="relative mb-6">
-      <input
-        [(ngModel)]="password"
-        name="password"
-        type="password"
-        placeholder="••••••••"
-        class="w-full py-3 pl-4 pr-10 border rounded-lg bg-gray-50 dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-800 dark:text-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
-      />
+    <!-- Panel de formulario (pantalla del Pokédex) -->
+    <div class="bg-gradient-to-br from-cyan-400 to-cyan-500 p-1 border-x-3 border-red-800">
+      <div class="bg-gradient-to-br from-white to-gray-50 dark:from-gray-800 dark:to-gray-900 rounded-lg p-4 shadow-inner">
+        
+        <!-- Subtítulo -->
+        <p class="text-center text-gray-600 dark:text-gray-300 mb-4 text-sm font-bold flex items-center justify-center gap-1.5">
+          <span>🎮</span>
+          <span>Inicia sesión para continuar</span>
+        </p>
+
+        <!-- Email -->
+        <div class="mb-3">
+          <label class="block mb-1 text-gray-800 dark:text-gray-200 font-black text-sm uppercase flex items-center gap-1">
+            <span>📧</span>
+            <span>Email</span>
+          </label>
+          <input
+            [(ngModel)]="email"
+            name="email"
+            type="email"
+            placeholder="entrenador@pokemon.com"
+            class="w-full py-2.5 px-3 border-2 rounded-lg bg-white dark:bg-gray-700 border-blue-400 dark:border-blue-600 text-gray-800 dark:text-gray-200 focus:ring-2 focus:ring-yellow-400 focus:border-yellow-400 outline-none transition font-bold shadow-md placeholder:text-gray-400 text-base"
+          />
+        </div>
+
+        <!-- Password -->
+        <div class="mb-4">
+          <label class="block mb-1 text-gray-800 dark:text-gray-200 font-black text-sm uppercase flex items-center gap-1">
+            <span>🔒</span>
+            <span>Contraseña</span>
+          </label>
+          <input
+            [(ngModel)]="password"
+            name="password"
+            type="password"
+            placeholder="••••••••"
+            class="w-full py-2.5 px-3 border-2 rounded-lg bg-white dark:bg-gray-700 border-blue-400 dark:border-blue-600 text-gray-800 dark:text-gray-200 focus:ring-2 focus:ring-yellow-400 focus:border-yellow-400 outline-none transition font-bold shadow-md placeholder:text-gray-400 text-base"
+          />
+        </div>
+
+        <!-- Botón principal -->
+        <button
+          (click)="submit()"
+          [disabled]="loading"
+          class="relative w-full py-3 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white rounded-lg shadow-lg hover:shadow-red-500/50 transition-all duration-300 font-black text-lg border-2 border-red-700 overflow-hidden group transform hover:scale-105 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          <span class="absolute inset-0 bg-gradient-to-r from-transparent via-white to-transparent opacity-0 group-hover:opacity-30 group-hover:animate-shimmer"></span>
+          
+          <span class="relative flex items-center justify-center gap-2">
+            <span class="text-2xl" *ngIf="!loading">⚡</span>
+            <span *ngIf="!loading">ENTRAR</span>
+            <span *ngIf="loading">CARGANDO...</span>
+            <span class="text-2xl" *ngIf="!loading">⚡</span>
+          </span>
+        </button>
+
+        <!-- Error message -->
+        <div *ngIf="errorMessage" class="mt-2.5 p-2 bg-red-100 dark:bg-red-900 border-2 border-red-500 rounded-lg">
+          <p class="text-red-700 dark:text-red-200 font-bold text-center flex items-center justify-center gap-1.5 text-sm">
+            <span>🔥</span>
+            <span>{{ errorMessage }}</span>
+          </p>
+        </div>
+
+        <!-- Línea decorativa con Pokéballs -->
+        <div class="my-4 flex items-center gap-2">
+          <div class="h-0.5 bg-gradient-to-r from-transparent via-red-400 to-yellow-400 flex-1 rounded-full"></div>
+          <div class="flex gap-1">
+            <div class="w-1.5 h-1.5 bg-red-500 rounded-full"></div>
+            <div class="w-1.5 h-1.5 bg-yellow-400 rounded-full"></div>
+            <div class="w-1.5 h-1.5 bg-blue-500 rounded-full"></div>
+          </div>
+          <div class="h-0.5 bg-gradient-to-l from-transparent via-blue-400 to-yellow-400 flex-1 rounded-full"></div>
+        </div>
+
+        <!-- Links adicionales (ultra compactos) -->
+        <div class="space-y-2.5">
+          <!-- Crear cuenta -->
+          <div class="text-center bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-gray-700 dark:to-gray-800 p-2 rounded-lg border border-blue-200 dark:border-blue-700">
+            <p class="text-gray-700 dark:text-gray-300 font-bold text-sm">
+              ¿No tienes cuenta?
+            </p>
+            <a routerLink="/register" 
+               class="inline-flex items-center gap-1 mt-0.5 text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-black text-sm transition-all hover:scale-105">
+              <span>🎒</span>
+              <span class="underline">¡Conviértete en Entrenador!</span>
+            </a>
+          </div>
+
+          <!-- Olvidaste contraseña -->
+          <div class="text-center">
+            <a routerLink="/forgot-password" 
+               class="inline-flex items-center gap-1 text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 font-bold transition-all hover:scale-105 text-sm">
+              <span>🔓</span>
+              <span class="underline">¿Olvidaste tu contraseña?</span>
+            </a>
+          </div>
+        </div>
+
+      </div>
     </div>
 
-    <!-- Botón -->
-    <button
-      (click)="submit()"
-      class="w-full py-3 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white rounded-lg shadow-md hover:shadow-lg transition font-semibold text-lg"
-    >
-      Entrar
-    </button>
-
-    <!-- Divisor -->
-    <div class="my-6 flex items-center gap-4">
-      <span class="h-[1px] bg-gray-300 dark:bg-gray-700 flex-1"></span>
-      <span class="text-gray-500 dark:text-gray-400 text-sm">o</span>
-      <span class="h-[1px] bg-gray-300 dark:bg-gray-700 flex-1"></span>
+    <!-- Panel inferior del Pokédex (mini) -->
+    <div class="bg-gradient-to-br from-red-600 to-red-700 rounded-b-2xl p-2 border-3 border-t-0 border-red-800 flex justify-center gap-2">
+      <div class="w-8 h-8 bg-green-500 rounded-md border-2 border-green-700"></div>
+      <div class="w-8 h-8 bg-red-500 rounded-md border-2 border-red-700"></div>
+      <div class="flex flex-col gap-1">
+        <div class="flex gap-1">
+          <div class="w-4 h-4 bg-blue-400 rounded-full border border-blue-600"></div>
+          <div class="w-4 h-4 bg-blue-400 rounded-full border border-blue-600"></div>
+        </div>
+        <div class="flex gap-1">
+          <div class="w-4 h-4 bg-blue-400 rounded-full border border-blue-600"></div>
+          <div class="w-4 h-4 bg-blue-400 rounded-full border border-blue-600"></div>
+        </div>
+      </div>
     </div>
 
-    <!-- Ir a registro -->
-    <p class="text-center text-gray-600 dark:text-gray-400">
-      ¿No tienes cuenta?
-      <a routerLink="/register" class="text-blue-600 hover:underline font-medium">Crear cuenta</a>
-    </p>
-    <p class="text-center text-gray-600 dark:text-gray-400 mt-3">
-  <a routerLink="/forgot-password" class="text-blue-600 hover:underline">
-    ¿Olvidaste tu contraseña?
-  </a>
-</p>
   </div>
 </div>
+
+<style>
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+.animate-shimmer {
+  animation: shimmer 1.5s infinite;
+}
+</style>

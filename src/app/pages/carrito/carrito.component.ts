@@ -13,23 +13,51 @@ import { CommonModule } from '@angular/common';
 export class CartComponent implements OnInit {
 
   items: any[] = [];
+  loading = false;
 
   constructor(
-    private cart: CartService, 
+    private cartService: CartService,
     private router: Router
   ) {}
 
   ngOnInit() {
-    this.items = this.cart.getCart();   // <-- SE CARGA DESDE AQUÍ
+    this.loadCart();
+  }
+
+  loadCart() {
+    this.loading = true;
+    this.cartService.getCart().subscribe({
+      next: (res: any) => {
+        this.items = res.items || [];
+        this.loading = false;
+      },
+      error: () => {
+        this.items = [];
+        this.loading = false;
+      }
+    });
+  }
+
+  removeItem(id: number) {
+    this.cartService.remove(id).subscribe({
+      next: () => this.loadCart(),
+      error: () => alert('Error eliminando')
+    });
+  }
+
+  clearCart() {
+    this.cartService.clear().subscribe({
+      next: () => this.loadCart(),
+      error: () => alert('Error al vaciar')
+    });
   }
 
   total() {
-    return this.cart.total();
-  }
-
-  remove(id: number) {
-    this.cart.remove(id);
-    this.items = this.cart.getCart();   // <-- REFRESCA LISTA
+    return this.items.reduce(
+      (sum: number, item: any) =>
+        sum + item.quantity * item.Product.price,
+      0
+    );
   }
 
   checkout() {

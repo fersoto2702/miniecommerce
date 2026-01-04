@@ -1,0 +1,21 @@
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class UserService {
+
+  private apiURL = 'http://localhost:4000/api/auth';
+
+  constructor(private http: HttpClient) {}
+
+  // ============================================
+  // 🔹 Obtener TODOS los usuarios (solo admin)
+  // GET /api/auth/users
+  // ============================================
+  getAllUsers(): Observable<any> {
+    return this.http.get(`${this.apiURL}/users`);
+  }
+}
