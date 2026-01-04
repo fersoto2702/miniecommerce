@@ -1,233 +1,538 @@
-<div class="min-h-screen flex items-center justify-center p-4">
+<div class="min-h-screen py-8 px-4 relative overflow-hidden">
   
-  <div class="w-full max-w-2xl">
+  <!-- Partículas de estrellas Pokémon flotando -->
+  <div class="fixed inset-0 pointer-events-none z-0">
+    <div *ngFor="let star of stars" 
+         class="absolute text-yellow-400"
+         [style.left.%]="star.x"
+         [style.top.%]="star.y"
+         [style.animation]="'float-star ' + (6 + star.delay) + 's ease-in-out infinite'"
+         [style.animation-delay]="star.delay + 's'"
+         [style.font-size.px]="star.size">
+      {{ star.icon }}
+    </div>
+  </div>
+
+  <!-- Confetti al completar pago -->
+  <div *ngIf="showConfetti" class="fixed inset-0 pointer-events-none z-50">
+    <div *ngFor="let confetti of confettiPieces"
+         class="absolute w-2 h-2 rounded-full"
+         [style.left.%]="confetti.x"
+         [style.background]="confetti.color"
+         [style.animation]="'confetti 3s ease-out forwards'"
+         [style.animation-delay]="confetti.delay + 's'">
+    </div>
+  </div>
+
+  <div class="max-w-7xl mx-auto relative z-10">
     
-    <!-- Header con temática Pokémon -->
-    <div class="text-center mb-6">
-      <div class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-full shadow-2xl shadow-yellow-500/50 mb-4 animate-bounce-slow">
-        <span class="text-4xl">💳</span>
+    <!-- Progress Stepper -->
+    <div class="mb-8 bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6 border-2 border-yellow-400/30">
+      <div class="flex items-center justify-between relative">
+        <!-- Línea de progreso -->
+        <div class="absolute top-5 left-0 right-0 h-1 bg-gray-200 dark:bg-gray-700 -z-10">
+          <div class="h-full bg-gradient-to-r from-yellow-400 to-orange-500 transition-all duration-500"
+               [style.width.%]="(currentStep / 3) * 100"></div>
+        </div>
+
+        <!-- Steps -->
+        <div *ngFor="let step of steps; let i = index" 
+             class="flex flex-col items-center flex-1"
+             [class.opacity-50]="i > currentStep">
+          <div class="w-10 h-10 rounded-full flex items-center justify-center mb-2 transition-all duration-300"
+               [ngClass]="{
+                 'bg-gradient-to-br from-yellow-400 to-orange-500 shadow-lg shadow-yellow-500/50': i <= currentStep,
+                 'bg-gray-300 dark:bg-gray-600': i > currentStep
+               }">
+            <span class="text-xl" *ngIf="i < currentStep">✓</span>
+            <span class="text-xl" *ngIf="i >= currentStep">{{ step.icon }}</span>
+          </div>
+          <span class="text-xs font-bold text-gray-600 dark:text-gray-300 text-center">
+            {{ step.label }}
+          </span>
+        </div>
       </div>
-      <h1 class="text-4xl font-black bg-gradient-to-r from-yellow-400 via-orange-500 to-red-500 bg-clip-text text-transparent mb-2">
-        Finalizar Compra
-      </h1>
-      <p class="text-gray-600 dark:text-gray-400 font-medium">Completa tu pedido y captura tus productos</p>
     </div>
 
-    <!-- Contenedor principal -->
-    <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl overflow-hidden border-2 border-yellow-400 dark:border-yellow-600">
+    <div class="grid lg:grid-cols-3 gap-6">
       
-      <!-- Header del card con total -->
-      <div class="bg-gradient-to-r from-yellow-400 via-orange-400 to-red-400 p-6 relative overflow-hidden">
-        <!-- Pokéball decorativa -->
-        <div class="absolute -right-8 -top-8 w-32 h-32 opacity-10">
-          <div class="w-full h-full rounded-full bg-white relative">
-            <div class="absolute top-1/2 left-0 right-0 h-2 bg-gray-900 -translate-y-1/2"></div>
-            <div class="absolute top-1/2 left-1/2 w-6 h-6 bg-white rounded-full border-4 border-gray-900 -translate-x-1/2 -translate-y-1/2"></div>
-          </div>
-        </div>
-
-        <div class="relative flex items-center justify-between">
-          <div>
-            <p class="text-white/90 text-sm font-bold mb-1">Total a pagar</p>
-            <p class="text-4xl font-black text-white drop-shadow-lg">${{ total }}</p>
-          </div>
-          <div class="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center">
-            <span class="text-3xl">⚡</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- Formulario de pago -->
-      <div class="p-6 space-y-5">
+      <!-- Columna izquierda: Resumen del pedido -->
+      <div class="lg:col-span-1 space-y-6">
         
-        <!-- Sección: Información de la tarjeta -->
-        <div>
-          <div class="flex items-center gap-2 mb-4">
-            <div class="w-8 h-8 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center">
-              <span class="text-lg">💳</span>
+        <!-- Resumen del pedido -->
+        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden border-2 border-blue-400/30">
+          <div class="bg-gradient-to-r from-blue-500 to-cyan-500 p-4">
+            <h2 class="text-xl font-black text-white flex items-center gap-2">
+              🛒 Tu Pedido
+            </h2>
+          </div>
+
+          <div class="p-4">
+            <!-- Toggle para expandir/contraer -->
+            <button (click)="toggleOrderSummary()" 
+                    class="w-full flex items-center justify-between text-sm font-bold text-gray-700 dark:text-gray-300 mb-4 hover:text-blue-600 transition-colors">
+              <span>{{ cartItems.length || 0 }} productos</span>
+              <span class="transform transition-transform duration-300" [class.rotate-180]="orderExpanded">▼</span>
+            </button>
+
+            <!-- Lista de productos -->
+            <div *ngIf="orderExpanded" class="space-y-3 mb-4 max-h-96 overflow-y-auto">
+              <div *ngFor="let item of cartItems" 
+                   class="flex gap-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors">
+                <img [src]="item.image" [alt]="item.name" class="w-16 h-16 object-cover rounded-lg">
+                <div class="flex-1 min-w-0">
+                  <p class="font-bold text-sm text-gray-800 dark:text-white truncate">{{ item.name }}</p>
+                  <p class="text-xs text-gray-600 dark:text-gray-400">Cantidad: {{ item.quantity }}</p>
+                  <p class="text-sm font-bold text-green-600 dark:text-green-400">${{ item.price }}</p>
+                </div>
+              </div>
             </div>
-            <h2 class="text-lg font-black text-gray-800 dark:text-white">Información de Pago</h2>
-          </div>
 
-          <!-- Nombre en tarjeta -->
-          <div class="mb-4">
-            <label for="cardName" class="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">
-              Nombre en la tarjeta
-            </label>
-            <input
-              [(ngModel)]="name"
-              name="n"
-              id="cardName"
-              type="text"
-              placeholder="Ash Ketchum"
-              class="w-full p-3 rounded-lg border-2 border-gray-300 dark:border-gray-600 
-                     bg-white dark:bg-gray-700 text-gray-900 dark:text-white
-                     placeholder-gray-400 dark:placeholder-gray-500
-                     focus:ring-2 focus:ring-yellow-500 focus:border-transparent 
-                     outline-none transition-all font-medium"
-              required
-            />
-          </div>
+            <!-- Código de descuento -->
+            <div class="mb-4">
+              <div class="flex gap-2">
+                <input [(ngModel)]="couponCode"
+                       placeholder="Código de descuento"
+                       class="flex-1 p-2 text-sm rounded-lg border-2 border-gray-300 dark:border-gray-600 
+                              bg-white dark:bg-gray-700 text-gray-900 dark:text-white
+                              focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none">
+                <button (click)="applyCoupon()"
+                        class="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white font-bold text-sm rounded-lg transition-colors">
+                  Aplicar
+                </button>
+              </div>
+              <p *ngIf="couponApplied" class="text-xs text-green-600 dark:text-green-400 mt-2 font-bold flex items-center gap-1">
+                ✓ Cupón aplicado: -${{ discount }}
+              </p>
+              <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                💡 Prueba: POKEMON10, PIKACHU20, STARTER5
+              </p>
+            </div>
 
-          <!-- Número de tarjeta -->
-          <div class="mb-4">
-            <label for="cardNumber" class="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">
-              Número de tarjeta
-            </label>
-            <div class="relative">
-              <input
-                [(ngModel)]="card"
-                name="c"
-                id="cardNumber"
-                type="text"
-                placeholder="1234 5678 9012 3456"
-                maxlength="19"
-                class="w-full p-3 pr-12 rounded-lg border-2 border-gray-300 dark:border-gray-600 
-                       bg-white dark:bg-gray-700 text-gray-900 dark:text-white
-                       placeholder-gray-400 dark:placeholder-gray-500
-                       focus:ring-2 focus:ring-yellow-500 focus:border-transparent 
-                       outline-none transition-all font-mono font-semibold tracking-wider"
-                required
-              />
-              <!-- Icono de tarjeta -->
-              <div class="absolute right-3 top-1/2 -translate-y-1/2 text-2xl opacity-50">
-                💳
+            <!-- Totales -->
+            <div class="space-y-2 border-t-2 border-gray-200 dark:border-gray-700 pt-4">
+              <div class="flex justify-between text-sm">
+                <span class="text-gray-600 dark:text-gray-400">Subtotal:</span>
+                <span class="font-bold text-gray-800 dark:text-white">${{ subtotal.toFixed(2) }}</span>
+              </div>
+              <div class="flex justify-between text-sm">
+                <span class="text-gray-600 dark:text-gray-400">Envío:</span>
+                <span class="font-bold text-gray-800 dark:text-white">${{ shipping.toFixed(2) }}</span>
+              </div>
+              <div class="flex justify-between text-sm">
+                <span class="text-gray-600 dark:text-gray-400">Impuestos (16%):</span>
+                <span class="font-bold text-gray-800 dark:text-white">${{ taxes.toFixed(2) }}</span>
+              </div>
+              <div *ngIf="discount > 0" class="flex justify-between text-sm">
+                <span class="text-green-600 dark:text-green-400">Descuento:</span>
+                <span class="font-bold text-green-600 dark:text-green-400">-${{ discount.toFixed(2) }}</span>
+              </div>
+              <div class="flex justify-between text-lg pt-2 border-t-2 border-gray-200 dark:border-gray-700">
+                <span class="font-black text-gray-800 dark:text-white">Total:</span>
+                <span class="font-black text-2xl bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">
+                  ${{ total.toFixed(2) }}
+                </span>
               </div>
             </div>
           </div>
-
-          <!-- Fecha y CVV -->
-          <div class="grid grid-cols-2 gap-4">
-            <!-- Expiración -->
-            <div>
-              <label for="expiry" class="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">
-                Fecha de expiración
-              </label>
-              <input
-                [(ngModel)]="exp"
-                name="e"
-                id="expiry"
-                type="text"
-                placeholder="MM/AA"
-                maxlength="5"
-                class="w-full p-3 rounded-lg border-2 border-gray-300 dark:border-gray-600 
-                       bg-white dark:bg-gray-700 text-gray-900 dark:text-white
-                       placeholder-gray-400 dark:placeholder-gray-500
-                       focus:ring-2 focus:ring-yellow-500 focus:border-transparent 
-                       outline-none transition-all font-mono font-semibold text-center"
-                required
-              />
-            </div>
-
-            <!-- CVV -->
-            <div>
-              <label for="cvv" class="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">
-                CVV
-              </label>
-              <input
-                [(ngModel)]="cvv"
-                name="v"
-                id="cvv"
-                type="text"
-                placeholder="123"
-                maxlength="4"
-                class="w-full p-3 rounded-lg border-2 border-gray-300 dark:border-gray-600 
-                       bg-white dark:bg-gray-700 text-gray-900 dark:text-white
-                       placeholder-gray-400 dark:placeholder-gray-500
-                       focus:ring-2 focus:ring-yellow-500 focus:border-transparent 
-                       outline-none transition-all font-mono font-semibold text-center"
-                required
-              />
-            </div>
-          </div>
-        </div>
-
-        <!-- Info de seguridad -->
-        <div class="bg-green-50 dark:bg-green-900/20 border-l-4 border-green-500 p-4 rounded-lg">
-          <div class="flex items-start gap-3">
-            <span class="text-2xl">🔒</span>
-            <div>
-              <p class="text-sm font-bold text-green-800 dark:text-green-300 mb-1">
-                Pago 100% Seguro
-              </p>
-              <p class="text-xs text-green-700 dark:text-green-400">
-                Tu información está protegida con encriptación de nivel bancario
-              </p>
-            </div>
-          </div>
-        </div>
-
-        <!-- Botón de pagar -->
-        <button
-          (click)="pay()"
-          class="group relative w-full bg-gradient-to-r from-green-500 to-emerald-600 
-                 hover:from-green-600 hover:to-emerald-700 text-white font-black 
-                 py-4 rounded-xl shadow-lg shadow-green-500/30 
-                 hover:shadow-xl hover:shadow-green-500/50 
-                 transform hover:scale-105 active:scale-95 
-                 transition-all duration-200 overflow-hidden">
-          
-          <!-- Efecto de brillo -->
-          <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700"></div>
-          
-          <span class="relative flex items-center justify-center gap-2 text-lg">
-            <span class="text-2xl">✨</span>
-            Completar Compra
-            <span class="text-2xl">✨</span>
-          </span>
-        </button>
-
-        <!-- Separador -->
-        <div class="relative my-6">
-          <div class="absolute inset-0 flex items-center">
-            <div class="w-full border-t-2 border-gray-200 dark:border-gray-700"></div>
-          </div>
-          <div class="relative flex justify-center">
-            <span class="bg-white dark:bg-gray-800 px-4 text-sm font-bold text-gray-500 dark:text-gray-400">
-              O paga con
-            </span>
-          </div>
-        </div>
-
-        <!-- Botón de PayPal -->
-        <div id="paypal-button-container" class="rounded-lg overflow-hidden"></div>
-
-        <!-- Métodos de pago aceptados -->
-        <div class="text-center pt-4">
-          <p class="text-xs text-gray-500 dark:text-gray-400 mb-2 font-semibold">Aceptamos</p>
-          <div class="flex items-center justify-center gap-3 flex-wrap">
-            <div class="bg-gray-100 dark:bg-gray-700 px-3 py-1.5 rounded-lg text-xs font-bold text-gray-700 dark:text-gray-300">
-              💳 Visa
-            </div>
-            <div class="bg-gray-100 dark:bg-gray-700 px-3 py-1.5 rounded-lg text-xs font-bold text-gray-700 dark:text-gray-300">
-              💳 Mastercard
-            </div>
-            <div class="bg-gray-100 dark:bg-gray-700 px-3 py-1.5 rounded-lg text-xs font-bold text-gray-700 dark:text-gray-300">
-              💙 PayPal
-            </div>
-          </div>
         </div>
 
       </div>
+
+      <!-- Columna derecha: Formulario de pago -->
+      <div class="lg:col-span-2 space-y-6">
+        
+        <!-- Preview de tarjeta 3D -->
+        <div style="perspective: 1000px;">
+          <div class="relative h-56 transition-transform duration-700"
+               [style.transform]="cardFlipped ? 'rotateY(180deg)' : 'rotateY(0deg)'"
+               style="transform-style: preserve-3d;">
+            
+            <!-- Frente de la tarjeta -->
+            <div class="absolute inset-0" style="backface-visibility: hidden;">
+              <div class="h-full rounded-2xl shadow-2xl p-6 flex flex-col justify-between overflow-hidden relative"
+                   [ngClass]="getCardGradient()">
+                
+                <div class="absolute inset-0 opacity-10">
+                  <div class="absolute inset-0" style="background-image: repeating-linear-gradient(45deg, transparent, transparent 35px, rgba(255,255,255,.1) 35px, rgba(255,255,255,.1) 70px);"></div>
+                </div>
+
+                <div class="relative flex justify-between items-start">
+                  <div class="w-12 h-10 bg-gradient-to-br from-yellow-200 to-yellow-400 rounded-lg shadow-lg"></div>
+                  <span class="text-4xl">{{ getCardIcon() }}</span>
+                </div>
+
+                <div class="relative">
+                  <p class="font-mono text-2xl font-bold text-white tracking-wider mb-4 drop-shadow-lg">
+                    {{ formatCardNumber(card) || '•••• •••• •••• ••••' }}
+                  </p>
+                  
+                  <div class="flex justify-between items-end">
+                    <div>
+                      <p class="text-xs text-white/70 uppercase mb-1">Titular</p>
+                      <p class="font-bold text-white text-sm">{{ name || 'TU NOMBRE' }}</p>
+                    </div>
+                    <div>
+                      <p class="text-xs text-white/70 uppercase mb-1">Vence</p>
+                      <p class="font-mono font-bold text-white text-sm">{{ exp || 'MM/AA' }}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Reverso de la tarjeta -->
+            <div class="absolute inset-0" [style.transform]="'rotateY(180deg)'" style="backface-visibility: hidden;">
+              <div class="h-full rounded-2xl shadow-2xl overflow-hidden" [ngClass]="getCardGradient()">
+                <div class="h-12 bg-gray-900 mt-6"></div>
+                <div class="p-6">
+                  <div class="bg-white h-10 rounded flex items-center justify-end px-4 mb-2">
+                    <span class="font-mono font-bold text-gray-800">{{ cvv || '•••' }}</span>
+                  </div>
+                  <p class="text-xs text-white/70">CVV</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Formulario de pago -->
+        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden border-2 border-yellow-400/30">
+          
+          <div class="bg-gradient-to-r from-yellow-400 via-orange-400 to-red-400 p-6 relative overflow-hidden">
+            <div class="absolute -right-8 -top-8 w-32 h-32 opacity-10">
+              <div class="w-full h-full rounded-full bg-white relative">
+                <div class="absolute top-1/2 left-0 right-0 h-2 bg-gray-900 -translate-y-1/2"></div>
+                <div class="absolute top-1/2 left-1/2 w-6 h-6 bg-white rounded-full border-4 border-gray-900 -translate-x-1/2 -translate-y-1/2"></div>
+              </div>
+            </div>
+            <h2 class="relative text-2xl font-black text-white drop-shadow-lg">💳 Información de Pago</h2>
+          </div>
+
+          <div class="p-6 space-y-5">
+            
+            <!-- Nombre -->
+            <div>
+              <label for="cardName" class="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">
+                Nombre en la tarjeta *
+              </label>
+              <input
+                [(ngModel)]="name"
+                (input)="validateName()"
+                (focus)="cardFlipped = false"
+                name="n"
+                id="cardName"
+                type="text"
+                placeholder="Ash Ketchum"
+                autocomplete="cc-name"
+                class="w-full p-3 rounded-lg border-2 transition-all duration-300 focus:ring-2 focus:ring-yellow-500 focus:border-transparent outline-none font-medium"
+                [ngClass]="{
+                  'border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700': !nameError && !nameTouched,
+                  'border-red-500': nameError && nameTouched,
+                  'border-green-500': !nameError && nameTouched && name
+                }"
+                required />
+              <p *ngIf="nameError && nameTouched" class="text-xs text-red-500 mt-1 font-bold">❌ {{ nameError }}</p>
+              <p *ngIf="!nameError && nameTouched && name" class="text-xs text-green-500 mt-1 font-bold">✓ Válido</p>
+            </div>
+
+            <!-- Número de tarjeta -->
+            <div>
+              <label for="cardNumber" class="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">
+                Número de tarjeta *
+              </label>
+              <div class="relative">
+                <input
+                  [(ngModel)]="card"
+                  (input)="onCardInput($event)"
+                  (focus)="cardFlipped = false"
+                  name="c"
+                  id="cardNumber"
+                  type="text"
+                  placeholder="1234 5678 9012 3456"
+                  maxlength="19"
+                  autocomplete="cc-number"
+                  class="w-full p-3 pr-12 rounded-lg border-2 transition-all duration-300 focus:ring-2 focus:ring-yellow-500 focus:border-transparent outline-none font-mono font-semibold tracking-wider"
+                  [ngClass]="{
+                    'border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700': !cardError && !cardTouched,
+                    'border-red-500': cardError && cardTouched,
+                    'border-green-500': !cardError && cardTouched && card && !cardError
+                  }"
+                  required />
+                <div class="absolute right-3 top-1/2 -translate-y-1/2 text-3xl">
+                  {{ getCardIcon() }}
+                </div>
+              </div>
+              <p *ngIf="cardError && cardTouched" class="text-xs text-red-500 mt-1 font-bold">❌ {{ cardError }}</p>
+              <p *ngIf="!cardError && cardTouched && card && cardType" class="text-xs text-green-500 mt-1 font-bold">
+                ✓ {{ cardType }} detectada
+              </p>
+            </div>
+
+            <!-- Fecha y CVV -->
+            <div class="grid grid-cols-2 gap-4">
+              
+              <!-- Expiración -->
+              <div>
+                <label for="expiry" class="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">
+                  Vencimiento *
+                </label>
+                <input
+                  [(ngModel)]="exp"
+                  (input)="onExpInput($event)"
+                  (focus)="cardFlipped = false"
+                  name="e"
+                  id="expiry"
+                  type="text"
+                  placeholder="MM/AA"
+                  maxlength="5"
+                  autocomplete="cc-exp"
+                  class="w-full p-3 rounded-lg border-2 transition-all duration-300 focus:ring-2 focus:ring-yellow-500 focus:border-transparent outline-none font-mono font-semibold text-center"
+                  [ngClass]="{
+                    'border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700': !expError && !expTouched,
+                    'border-red-500': expError && expTouched,
+                    'border-green-500': !expError && expTouched && exp && !expError
+                  }"
+                  required />
+                <p *ngIf="expError && expTouched" class="text-xs text-red-500 mt-1 font-bold">❌ {{ expError }}</p>
+                <p *ngIf="!expError && expTouched && exp" class="text-xs text-green-500 mt-1 font-bold">✓ Válido</p>
+              </div>
+
+              <!-- CVV -->
+              <div>
+                <label for="cvv" class="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2 flex items-center gap-2">
+                  CVV *
+                  <div class="relative group">
+                    <span class="cursor-help text-xs bg-gray-200 dark:bg-gray-600 rounded-full w-4 h-4 flex items-center justify-center">?</span>
+                    <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 hidden group-hover:block z-50">
+                      <div class="bg-gray-900 text-white text-xs rounded-lg p-3 whitespace-nowrap shadow-2xl">
+                        <p class="font-bold mb-1">Código de seguridad</p>
+                        <p>3-4 dígitos en el reverso</p>
+                        <div class="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-gray-900"></div>
+                      </div>
+                    </div>
+                  </div>
+                </label>
+                <input
+                  [(ngModel)]="cvv"
+                  (input)="onCvvInput($event)"
+                  (focus)="cardFlipped = true"
+                  (blur)="cardFlipped = false"
+                  name="v"
+                  id="cvv"
+                  type="text"
+                  placeholder="123"
+                  maxlength="4"
+                  autocomplete="cc-csc"
+                  class="w-full p-3 rounded-lg border-2 transition-all duration-300 focus:ring-2 focus:ring-yellow-500 focus:border-transparent outline-none font-mono font-semibold text-center"
+                  [ngClass]="{
+                    'border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700': !cvvError && !cvvTouched,
+                    'border-red-500': cvvError && cvvTouched,
+                    'border-green-500': !cvvError && cvvTouched && cvv && !cvvError
+                  }"
+                  required />
+                <p *ngIf="cvvError && cvvTouched" class="text-xs text-red-500 mt-1 font-bold">❌ {{ cvvError }}</p>
+                <p *ngIf="!cvvError && cvvTouched && cvv" class="text-xs text-green-500 mt-1 font-bold">✓ Válido</p>
+              </div>
+            </div>
+
+            <!-- Guardar tarjeta -->
+            <div class="flex items-center gap-2">
+              <input type="checkbox" id="saveCard" [(ngModel)]="saveCard" 
+                     class="w-4 h-4 text-yellow-500 rounded focus:ring-yellow-500">
+              <label for="saveCard" class="text-sm text-gray-700 dark:text-gray-300 font-medium cursor-pointer">
+                💾 Guardar tarjeta para futuras compras (simulado)
+              </label>
+            </div>
+
+            <!-- Botón de pagar con estados -->
+            <button
+              (click)="pay()"
+              [disabled]="!isFormValid() || isProcessing"
+              class="group relative w-full py-4 rounded-xl font-black text-lg transition-all duration-300 overflow-hidden"
+              [ngClass]="{
+                'bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 shadow-lg shadow-green-500/30 hover:shadow-xl hover:shadow-green-500/50 hover:scale-105 active:scale-95': !isProcessing && !paymentSuccess && isFormValid(),
+                'bg-blue-500': isProcessing,
+                'bg-green-600 animate-bounce': paymentSuccess,
+                'opacity-50 cursor-not-allowed': !isFormValid() || isProcessing
+              }">
+              
+              <div *ngIf="!isProcessing && !paymentSuccess && isFormValid()" 
+                   class="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
+              
+              <span *ngIf="!isProcessing && !paymentSuccess" class="relative flex items-center justify-center gap-2 text-white">
+                <span class="text-2xl">✨</span>
+                <span>Completar Compra - ${{ total.toFixed(2) }}</span>
+                <span class="text-2xl">✨</span>
+              </span>
+
+              <span *ngIf="isProcessing" class="relative flex items-center justify-center gap-3 text-white">
+                <div class="w-6 h-6 border-3 border-white border-t-transparent rounded-full animate-spin"></div>
+                <span>Procesando pago...</span>
+              </span>
+
+              <span *ngIf="paymentSuccess" class="relative flex items-center justify-center gap-2 text-white">
+                <span class="text-2xl">✓</span>
+                <span>¡Pago exitoso!</span>
+                <span class="text-2xl">🎉</span>
+              </span>
+            </button>
+
+            <p *ngIf="!isFormValid()" class="text-xs text-center text-red-500 font-bold">
+              ⚠️ Por favor completa todos los campos correctamente
+            </p>
+
+            <!-- Separador -->
+            <div class="relative my-6">
+              <div class="absolute inset-0 flex items-center">
+                <div class="w-full border-t-2 border-gray-200 dark:border-gray-700"></div>
+              </div>
+              <div class="relative flex justify-center">
+                <span class="bg-white dark:bg-gray-800 px-4 text-sm font-bold text-gray-500 dark:text-gray-400">
+                  O paga con
+                </span>
+              </div>
+            </div>
+
+            <!-- PayPal -->
+            <div id="paypal-button-container" class="rounded-lg overflow-hidden"></div>
+
+            <!-- Métodos de pago aceptados -->
+            <div class="text-center pt-4">
+              <p class="text-xs text-gray-500 dark:text-gray-400 mb-2 font-semibold">Métodos de pago aceptados</p>
+              <div class="flex items-center justify-center gap-3 flex-wrap">
+                <div class="bg-gray-100 dark:bg-gray-700 px-3 py-1.5 rounded-lg text-xs font-bold text-gray-700 dark:text-gray-300">💳 Visa</div>
+                <div class="bg-gray-100 dark:bg-gray-700 px-3 py-1.5 rounded-lg text-xs font-bold text-gray-700 dark:text-gray-300">💳 Mastercard</div>
+                <div class="bg-gray-100 dark:bg-gray-700 px-3 py-1.5 rounded-lg text-xs font-bold text-gray-700 dark:text-gray-300">💳 Amex</div>
+                <div class="bg-gray-100 dark:bg-gray-700 px-3 py-1.5 rounded-lg text-xs font-bold text-gray-700 dark:text-gray-300">💙 PayPal</div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Easter Egg: Mensaje Pokémon -->
+        <div *ngIf="paymentSuccess" class="bg-gradient-to-r from-yellow-400 to-orange-500 rounded-2xl p-6 text-center animate-bounce">
+          <p class="text-2xl font-black text-white mb-2">🎉 ¡Atrapaste nuevos productos! 🎉</p>
+          <p class="text-white font-bold">¡Pikachu aprueba tu compra! ⚡</p>
+          <p class="text-sm text-white/80 mt-2">Redirigiendo en 3 segundos...</p>
+        </div>
+
+      </div>
+
     </div>
 
     <!-- Información adicional -->
-    <div class="mt-6 text-center">
+    <div class="mt-6 text-center space-y-3">
       <p class="text-sm text-gray-600 dark:text-gray-400">
         🎮 <span class="font-bold text-yellow-600 dark:text-yellow-400">¡Gracias por tu compra!</span> Tu pedido será procesado de inmediato
       </p>
+      
+      <!-- Testimonios -->
+      <div class="bg-white dark:bg-gray-800 rounded-xl p-4 max-w-2xl mx-auto border-2 border-purple-400/30">
+        <p class="text-xs text-gray-500 dark:text-gray-400 mb-2 font-bold">Lo que dicen nuestros entrenadores:</p>
+        <div class="flex items-center justify-center gap-4 text-xs">
+          <div class="flex items-center gap-1">
+            <span>⭐⭐⭐⭐⭐</span>
+            <span class="font-bold">4.9/5</span>
+          </div>
+          <span class="text-gray-400">•</span>
+          <span class="font-bold">12,453 reseñas</span>
+        </div>
+      </div>
     </div>
 
   </div>
 </div>
 
 <style>
-@keyframes bounce-slow {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-10px); }
+/* Animaciones de estrellas flotantes */
+@keyframes float-star {
+  0%, 100% {
+    transform: translateY(0) rotate(0deg);
+    opacity: 0.3;
+  }
+  50% {
+    transform: translateY(-30px) rotate(180deg);
+    opacity: 0.8;
+  }
 }
 
-.animate-bounce-slow {
-  animation: bounce-slow 2s ease-in-out infinite;
+/* Animación de confetti */
+@keyframes confetti {
+  0% {
+    transform: translateY(-100vh) rotate(0deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(100vh) rotate(720deg);
+    opacity: 0;
+  }
+}
+
+/* Animación de bounce lenta */
+@keyframes bounce-slow {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+/* Animación de spinner */
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-spin {
+  animation: spin 1s linear infinite;
+}
+
+/* Transiciones suaves */
+* {
+  transition-property: background-color, border-color, color, fill, stroke, opacity, box-shadow, transform;
+  transition-duration: 200ms;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Scroll personalizado */
+.overflow-y-auto {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(234, 179, 8, 0.5) transparent;
+}
+
+.overflow-y-auto::-webkit-scrollbar {
+  width: 6px;
+}
+
+.overflow-y-auto::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.overflow-y-auto::-webkit-scrollbar-thumb {
+  background-color: rgba(234, 179, 8, 0.5);
+  border-radius: 3px;
+}
+
+.overflow-y-auto::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(234, 179, 8, 0.7);
+}
+
+/* Mejora de accesibilidad */
+button:focus-visible,
+input:focus-visible,
+select:focus-visible {
+  outline: 2px solid rgb(234, 179, 8);
+  outline-offset: 2px;
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+  .perspective-1000 {
+    perspective: 500px;
+  }
 }
 </style>

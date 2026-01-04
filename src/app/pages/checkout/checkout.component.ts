@@ -180,7 +180,7 @@ export class CheckoutComponent implements OnInit, OnDestroy {
           name: item.Product?.name || 'Producto',
           price: item.Product?.price || 0,
           quantity: item.quantity || 1,
-          image: item.Product?.image_url || 'https://via.placeholder.com/150'
+          image: item.Product?.image_url || 'https://m.media-amazon.com/images/I/518bzP8VW1L._AC_SL1000_.jpg'
         }));
         
         this.calculateTotals();
