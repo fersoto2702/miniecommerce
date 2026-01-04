@@ -38,4 +38,13 @@ export class AdminUsersComponent implements OnInit {
       }
     });
   }
+
+   // Getters para contar usuarios por rol
+  get totalAdmins(): number {
+    return this.users.filter(u => u.role === 'admin').length;
+  }
+
+  get totalUsers(): number {
+    return this.users.filter(u => u.role === 'user').length;
+  }
 }

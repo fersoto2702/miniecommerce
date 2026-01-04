@@ -79,7 +79,7 @@
             <div *ngIf="orderExpanded" class="space-y-3 mb-4 max-h-96 overflow-y-auto">
               <div *ngFor="let item of cartItems" 
                    class="flex gap-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors">
-                <img [src]="item.image" [alt]="item.name" class="w-16 h-16 object-cover rounded-lg">
+                <img [src]="item.image" [alt]="item.name" class="w-16 h-17 object-cover rounded-lg">
                 <div class="flex-1 min-w-0">
                   <p class="font-bold text-sm text-gray-800 dark:text-white truncate">{{ item.name }}</p>
                   <p class="text-xs text-gray-600 dark:text-gray-400">Cantidad: {{ item.quantity }}</p>
@@ -430,20 +430,11 @@
       
       <!-- Testimonios -->
       <div class="bg-white dark:bg-gray-800 rounded-xl p-4 max-w-2xl mx-auto border-2 border-purple-400/30">
-        <p class="text-xs text-gray-500 dark:text-gray-400 mb-2 font-bold">Lo que dicen nuestros entrenadores:</p>
-        <div class="flex items-center justify-center gap-4 text-xs">
-          <div class="flex items-center gap-1">
-            <span>⭐⭐⭐⭐⭐</span>
-            <span class="font-bold">4.9/5</span>
-          </div>
-          <span class="text-gray-400">•</span>
-          <span class="font-bold">12,453 reseñas</span>
         </div>
       </div>
     </div>
 
   </div>
-</div>
 
 <style>
 /* Animaciones de estrellas flotantes */

@@ -1,15 +1,274 @@
 <app-admin-sidebar></app-admin-sidebar>
 
-<div class="ml-72 p-10 max-w-xl">
-  <h1 class="text-3xl font-bold mb-6">Editar Producto</h1>
+<div class="ml-72 p-6 min-h-screen bg-gradient-to-br from-red-50 via-yellow-50 to-blue-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 relative overflow-hidden">
+  
+  <!-- Pokéballs decorativas -->
+  <div class="pokeball pokeball-1">
+    <div class="pokeball-top"></div>
+    <div class="pokeball-center"></div>
+    <div class="pokeball-bottom"></div>
+  </div>
+  <div class="pokeball pokeball-2">
+    <div class="pokeball-top"></div>
+    <div class="pokeball-center"></div>
+    <div class="pokeball-bottom"></div>
+  </div>
 
-  <form class="flex flex-col gap-4">
-    <input [(ngModel)]="product.name" name="name" class="p-2 border rounded" placeholder="Nombre">
-    <input [(ngModel)]="product.price" name="price" class="p-2 border rounded" placeholder="Precio">
-    <textarea [(ngModel)]="product.desc" name="desc" class="p-2 border rounded" placeholder="Descripción"></textarea>
+  <!-- Partículas flotantes -->
+  <div class="particle-type particle-1">🔥</div>
+  <div class="particle-type particle-2">💧</div>
+  <div class="particle-type particle-3">⚡</div>
 
-    <button (click)="save()" class="bg-blue-600 text-white px-4 py-2 rounded">
-      Guardar
-    </button>
-  </form>
+  <div class="max-w-3xl mx-auto relative z-10">
+    
+    <!-- Header -->
+    <div class="bg-gradient-to-r from-red-500 via-yellow-400 to-blue-500 rounded-2xl shadow-xl p-6 mb-6 relative overflow-hidden">
+      <div class="absolute top-0 right-0 w-32 h-32 bg-white opacity-10 rounded-full -mr-16 -mt-16"></div>
+      
+      <div class="relative flex items-center gap-3">
+        <a routerLink="/admin/products" class="bg-white/20 hover:bg-white/30 backdrop-blur-sm p-3 rounded-xl transition-all">
+          <span class="text-white text-xl">←</span>
+        </a>
+        <div>
+          <h1 class="text-3xl font-black text-white drop-shadow-lg flex items-center gap-3">
+            ✏️ Editar Producto
+          </h1>
+          <p class="text-white/90 text-sm mt-1 font-semibold">Actualiza la información del producto</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Formulario con glassmorphism -->
+    <div class="bg-white/90 dark:bg-gray-800/90 backdrop-blur-md rounded-2xl shadow-2xl p-8 border-4 border-red-400/50 dark:border-red-600/50">
+      
+      <form class="space-y-6" (ngSubmit)="save()">
+        
+        <!-- Nombre del Producto -->
+        <div class="group">
+          <label class="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2 flex items-center gap-2">
+            <span class="text-xl">🎮</span>
+            Nombre del Producto
+          </label>
+          <input 
+            [(ngModel)]="product.name" 
+            name="name" 
+            type="text"
+            required
+            class="w-full px-4 py-3 bg-gray-50 dark:bg-gray-700 border-2 border-gray-300 dark:border-gray-600 rounded-xl focus:outline-none focus:border-red-500 focus:ring-4 focus:ring-red-500/10 transition-all text-gray-900 dark:text-white font-medium placeholder-gray-400"
+            placeholder="Ej: Pikachu Peluche Gigante">
+          <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">Ingresa un nombre descriptivo y atractivo</p>
+        </div>
+
+        <!-- Precio -->
+        <div class="group">
+          <label class="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2 flex items-center gap-2">
+            <span class="text-xl">💰</span>
+            Precio
+          </label>
+          <div class="relative">
+            <span class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 dark:text-gray-400 font-bold text-lg">$</span>
+            <input 
+              [(ngModel)]="product.price" 
+              name="price" 
+              type="number"
+              required
+              min="0"
+              step="0.01"
+              class="w-full pl-8 pr-4 py-3 bg-gray-50 dark:bg-gray-700 border-2 border-gray-300 dark:border-gray-600 rounded-xl focus:outline-none focus:border-yellow-500 focus:ring-4 focus:ring-yellow-500/10 transition-all text-gray-900 dark:text-white font-bold text-lg placeholder-gray-400"
+              placeholder="299.99">
+          </div>
+          <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">Precio en pesos mexicanos (MXN)</p>
+        </div>
+
+        <!-- Descripción -->
+        <div class="group">
+          <label class="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2 flex items-center gap-2">
+            <span class="text-xl">📝</span>
+            Descripción
+          </label>
+          <textarea 
+            [(ngModel)]="product.desc" 
+            name="desc" 
+            rows="5"
+            required
+            class="w-full px-4 py-3 bg-gray-50 dark:bg-gray-700 border-2 border-gray-300 dark:border-gray-600 rounded-xl focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all text-gray-900 dark:text-white font-medium placeholder-gray-400 resize-none"
+            placeholder="Describe las características, tamaño, materiales, etc..."></textarea>
+          <div class="flex justify-between mt-1">
+            <p class="text-xs text-gray-500 dark:text-gray-400">Sé detallado y claro</p>
+            <p class="text-xs text-gray-500 dark:text-gray-400">{{ product.desc?.length || 0 }} caracteres</p>
+          </div>
+        </div>
+
+        <!-- Stock (opcional) -->
+        <div class="group">
+          <label class="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2 flex items-center gap-2">
+            <span class="text-xl">📦</span>
+            Stock Disponible
+          </label>
+          <input 
+            [(ngModel)]="product.stock" 
+            name="stock" 
+            type="number"
+            min="0"
+            class="w-full px-4 py-3 bg-gray-50 dark:bg-gray-700 border-2 border-gray-300 dark:border-gray-600 rounded-xl focus:outline-none focus:border-green-500 focus:ring-4 focus:ring-green-500/10 transition-all text-gray-900 dark:text-white font-medium placeholder-gray-400"
+            placeholder="15">
+          <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">Cantidad de unidades disponibles</p>
+        </div>
+
+        <!-- Vista previa del precio -->
+        <div class="bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 rounded-xl p-4 border-2 border-green-300 dark:border-green-700">
+          <div class="flex items-center justify-between">
+            <span class="text-sm font-bold text-gray-700 dark:text-gray-300">Vista previa del precio:</span>
+            <span class="text-2xl font-black text-green-600 dark:text-green-400">
+              💰 ${{ product.price || 0 }}
+            </span>
+          </div>
+        </div>
+
+        <!-- Botones de acción -->
+        <div class="flex gap-4 pt-4">
+          
+        <a routerLink="/admin/products"
+            class="flex-1 bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 font-bold px-6 py-4 rounded-xl transition-all duration-200 text-center shadow-lg hover:shadow-xl transform hover:scale-105 flex items-center justify-center gap-2">
+            <span class="text-xl">❌</span>
+            <span>Cancelar</span>
+          </a>
+          
+          <button 
+            type="submit"
+            class="flex-1 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-bold px-6 py-4 rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105 flex items-center justify-center gap-2">
+            <span class="text-xl">💾</span>
+            <span>Guardar Cambios</span>
+          </button>
+        </div>
+
+        <!-- Mensaje de ayuda -->
+        <div class="bg-blue-50 dark:bg-blue-900/20 rounded-xl p-4 border-2 border-blue-300 dark:border-blue-700">
+          <div class="flex items-start gap-3">
+            <span class="text-2xl">💡</span>
+            <div>
+              <p class="text-sm font-bold text-blue-900 dark:text-blue-300 mb-1">Consejo:</p>
+              <p class="text-xs text-blue-700 dark:text-blue-400">Asegúrate de que toda la información sea precisa antes de guardar. Los cambios se reflejarán inmediatamente en la tienda.</p>
+            </div>
+          </div>
+        </div>
+
+      </form>
+
+    </div>
+
+  </div>
+
 </div>
+
+<style>
+/* Pokéballs flotantes */
+.pokeball {
+  position: absolute;
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  animation: float-pokeball 20s infinite ease-in-out;
+  opacity: 0.15;
+  pointer-events: none;
+}
+
+.pokeball-top {
+  position: absolute;
+  width: 100%;
+  height: 50%;
+  background: #ff1a1a;
+  border-radius: 80px 80px 0 0;
+}
+
+.pokeball-bottom {
+  position: absolute;
+  width: 100%;
+  height: 50%;
+  background: white;
+  border-radius: 0 0 80px 80px;
+  bottom: 0;
+}
+
+.pokeball-center {
+  position: absolute;
+  width: 100%;
+  height: 10px;
+  background: #1a1a1a;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 2;
+}
+
+.pokeball-center::after {
+  content: '';
+  position: absolute;
+  width: 24px;
+  height: 24px;
+  background: white;
+  border: 5px solid #1a1a1a;
+  border-radius: 50%;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.pokeball-1 {
+  right: 10%;
+  top: 15%;
+  animation-delay: 0s;
+}
+
+.pokeball-2 {
+  left: 15%;
+  bottom: 20%;
+  animation-delay: 10s;
+}
+
+@keyframes float-pokeball {
+  0%, 100% {
+    transform: translateY(0) rotate(0deg);
+    opacity: 0.15;
+  }
+  50% {
+    transform: translateY(-100px) rotate(180deg);
+    opacity: 0.25;
+  }
+}
+
+/* Partículas */
+.particle-type {
+  position: fixed;
+  font-size: 32px;
+  animation: float-particle 15s infinite ease-in-out;
+  opacity: 0;
+  pointer-events: none;
+  filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.5));
+}
+
+.particle-1 { right: 20%; top: 20%; animation-delay: 0s; }
+.particle-2 { left: 10%; top: 50%; animation-delay: 5s; }
+.particle-3 { right: 15%; bottom: 30%; animation-delay: 10s; }
+
+@keyframes float-particle {
+  0%, 100% {
+    transform: translateY(0) rotate(0deg) scale(1);
+    opacity: 0;
+  }
+  50% {
+    transform: translateY(-50px) rotate(180deg) scale(1.3);
+    opacity: 0.5;
+  }
+}
+
+/* Animación de focus en inputs */
+.group input:focus,
+.group textarea:focus {
+  transform: translateY(-2px);
+}
+
+/* Animación del botón */
+button[type="submit"]:active {
+  transform: scale(0.98) !important;
+}
+</style>

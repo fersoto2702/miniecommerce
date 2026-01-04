@@ -1,93 +1,118 @@
 <app-admin-sidebar></app-admin-sidebar>
 
-<div class="ml-64 p-2 min-h-screen bg-gradient-to-br from-red-50 via-yellow-50 to-blue-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
+<div class="ml-64 p-6 min-h-screen bg-gradient-to-br from-red-50 via-yellow-50 to-blue-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
   
   <div class="max-w-7xl mx-auto">
     
-    <!-- Header Pokémon más compacto -->
-    <div class="bg-gradient-to-r from-red-500 via-yellow-400 to-blue-500 rounded-lg shadow-lg p-2.5 mb-2 relative overflow-hidden">
-      <div class="absolute top-0 right-0 w-16 h-16 bg-white opacity-10 rounded-full -mr-8 -mt-8"></div>
+    <!-- Header Pokémon optimizado -->
+    <div class="bg-gradient-to-r from-red-500 via-yellow-400 to-blue-500 rounded-2xl shadow-xl p-6 mb-6 relative overflow-hidden">
+      <div class="absolute top-0 right-0 w-32 h-32 bg-white opacity-10 rounded-full -mr-16 -mt-16"></div>
+      <div class="absolute bottom-0 left-0 w-24 h-24 bg-white opacity-5 rounded-full -ml-12 -mb-12"></div>
       
       <div class="relative flex items-center justify-between">
         <div>
-          <h1 class="text-xl font-black text-white drop-shadow-lg flex items-center gap-2">
+          <h1 class="text-3xl font-black text-white drop-shadow-lg flex items-center gap-3">
             ⚡ Administrar Productos
           </h1>
-          <p class="text-white/90 text-xs">Gestiona tu inventario Pokémon</p>
+          <p class="text-white/90 text-sm mt-1 font-semibold">Gestiona tu inventario Pokémon</p>
         </div>
         <a 
           routerLink="/admin/products/create"
-          class="bg-white hover:bg-yellow-50 text-red-600 font-bold px-4 py-2 rounded-lg shadow-md hover:shadow-lg transform hover:scale-105 transition-all duration-200 flex items-center gap-1.5 text-xs">
-          <span class="text-base">➕</span>
-          Nuevo Producto
+          class="bg-white hover:bg-yellow-50 text-red-600 font-bold px-6 py-3 rounded-xl shadow-lg hover:shadow-2xl transform hover:scale-105 transition-all duration-200 flex items-center gap-2">
+          <span class="text-xl">➕</span>
+          <span>Nuevo Producto</span>
         </a>
       </div>
     </div>
 
-    <!-- Tabla centrada y más ancha -->
-    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-2xl overflow-hidden border-2 border-red-400 dark:border-red-600">
+    <!-- Tabla mejorada -->
+    <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl overflow-hidden border-4 border-red-400 dark:border-red-600">
       
       <div class="overflow-x-auto">
         <table class="w-full">
-          <thead class="bg-gradient-to-r from-red-500 to-yellow-500 text-white">
+          <thead class="bg-gradient-to-r from-red-500 via-red-600 to-yellow-500">
             <tr>
-              <th class="py-2 px-3 text-left font-bold text-sm w-16">ID</th>
-              <th class="py-2 px-4 text-left font-bold text-sm">Nombre del Producto</th>
-              <th class="py-2 px-4 text-left font-bold text-sm w-32">Precio</th>
-              <th class="py-2 px-4 text-center font-bold text-sm w-44">Acciones</th>
+              <th class="py-4 px-6 text-left font-black text-white text-base tracking-wide">
+                ID
+              </th>
+              <th class="py-4 px-6 text-left font-black text-white text-base tracking-wide">
+                Nombre del Producto
+              </th>
+              <th class="py-4 px-6 text-left font-black text-white text-base tracking-wide">
+                Precio
+              </th>
+              <th class="py-4 px-6 text-center font-black text-white text-base tracking-wide">
+                Acciones
+              </th>
             </tr>
           </thead>
 
-          <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
+          <tbody class="divide-y-2 divide-red-200 dark:divide-gray-700">
             <tr *ngFor="let p of products; let i = index" 
-                class="hover:bg-yellow-100 dark:hover:bg-gray-700 transition-colors duration-150"
+                class="hover:bg-yellow-50 dark:hover:bg-gray-700 transition-all duration-200 group"
                 [class.bg-red-50]="i % 2 === 0"
                 [class.dark:bg-gray-800]="i % 2 === 0"
                 [class.bg-white]="i % 2 !== 0"
-                [class.dark:bg-gray-750]="i % 2 !== 0">
+                [class.dark:bg-gray-850]="i % 2 !== 0">
               
-              <td class="py-2 px-3 font-mono text-gray-600 dark:text-gray-400 text-xs font-semibold">
-                #{{ p.id }}
+              <td class="py-4 px-6 font-mono text-gray-600 dark:text-gray-400 font-bold">
+                <span class="inline-flex items-center justify-center w-10 h-10 bg-red-100 dark:bg-red-900/30 rounded-lg text-red-600 dark:text-red-400 font-black">
+                  {{ p.id }}
+                </span>
               </td>
               
-              <td class="py-2 px-4 font-bold text-gray-900 dark:text-white text-sm">
-                {{ p.name }}
+              <td class="py-4 px-6">
+                <div class="flex items-center gap-3">
+                  <span class="text-2xl">🎮</span>
+                  <span class="font-bold text-gray-900 dark:text-white text-base group-hover:text-red-600 dark:group-hover:text-yellow-400 transition-colors">
+                    {{ p.name }}
+                  </span>
+                </div>
               </td>
               
-              <td class="py-2 px-4">
-                <span class="inline-flex items-center gap-1 bg-gradient-to-r from-green-400 to-emerald-500 text-white font-black px-3 py-1 rounded-lg shadow-md text-xs">
+              <td class="py-4 px-6">
+                <span class="inline-flex items-center gap-2 bg-gradient-to-r from-green-500 to-emerald-600 text-white font-black px-4 py-2 rounded-xl shadow-lg text-base">
                   💰 ${{ p.price }}
                 </span>
               </td>
 
-              <td class="py-2 px-4">
-                <div class="flex items-center justify-center gap-2">
-                  <a
-                    [routerLink]="['/admin/products/edit', p.id]"
-                    class="bg-blue-500 hover:bg-blue-600 text-white font-bold px-3 py-1.5 rounded-lg transition-all duration-200 text-xs flex items-center gap-1 shadow-md hover:shadow-lg">
-                    ✏️ Editar
+              <td class="py-4 px-6">
+                <div class="flex items-center justify-center gap-3">
+                  
+                  <a [routerLink]="['/admin/products/edit', p.id]"
+                    class="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-bold px-5 py-2.5 rounded-xl transition-all duration-200 flex items-center gap-2 shadow-lg hover:shadow-xl transform hover:scale-105">
+                    <span class="text-lg">✏️</span>
+                    <span>Editar</span>
                   </a>
 
                   <button 
                     (click)="delete(p.id)" 
-                    class="bg-red-500 hover:bg-red-600 text-white font-bold px-3 py-1.5 rounded-lg transition-all duration-200 text-xs flex items-center gap-1 shadow-md hover:shadow-lg">
-                    🗑️ Eliminar
+                    class="bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white font-bold px-5 py-2.5 rounded-xl transition-all duration-200 flex items-center gap-2 shadow-lg hover:shadow-xl transform hover:scale-105">
+                    <span class="text-lg">🗑️</span>
+                    <span>Eliminar</span>
                   </button>
                 </div>
               </td>
             </tr>
 
+            <!-- Estado vacío -->
             <tr *ngIf="products.length === 0">
-              <td colspan="4" class="py-10 text-center">
-                <div class="flex flex-col items-center gap-3">
-                  <span class="text-6xl opacity-50">🎯</span>
-                  <p class="text-gray-500 dark:text-gray-400 font-bold text-base">
+              <td colspan="4" class="py-16">
+                <div class="flex flex-col items-center gap-4">
+                  <div class="w-24 h-24 bg-gradient-to-br from-red-100 to-yellow-100 dark:from-red-900/20 dark:to-yellow-900/20 rounded-full flex items-center justify-center">
+                    <span class="text-6xl">🎯</span>
+                  </div>
+                  <p class="text-gray-600 dark:text-gray-400 font-bold text-lg">
                     No hay productos registrados
+                  </p>
+                  <p class="text-gray-500 dark:text-gray-500 text-sm">
+                    ¡Comienza agregando tu primer producto Pokémon!
                   </p>
                   <a 
                     routerLink="/admin/products/create"
-                    class="mt-2 bg-red-500 hover:bg-red-600 text-white font-bold px-5 py-2 rounded-lg transition-all duration-200 text-sm shadow-lg">
-                    ➕ Agregar primer producto
+                    class="mt-2 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white font-bold px-8 py-3 rounded-xl transition-all duration-200 shadow-xl hover:shadow-2xl transform hover:scale-105 flex items-center gap-2">
+                    <span class="text-xl">➕</span>
+                    <span>Agregar primer producto</span>
                   </a>
                 </div>
               </td>
@@ -96,11 +121,17 @@
         </table>
       </div>
 
-      <!-- Footer mejorado -->
-      <div class="bg-gradient-to-r from-red-100 to-yellow-100 dark:from-gray-700 dark:to-gray-600 px-4 py-2 border-t-2 border-red-400 dark:border-red-600">
-        <p class="text-xs text-gray-800 dark:text-gray-200 font-bold text-center">
-          🎮 Total de productos: <span class="text-red-600 dark:text-yellow-400 font-black text-sm">{{ products.length }}</span>
-        </p>
+      <!-- Footer con estadísticas -->
+      <div class="bg-gradient-to-r from-red-100 via-yellow-100 to-blue-100 dark:from-gray-700 dark:to-gray-600 px-6 py-4 border-t-4 border-red-400 dark:border-red-600">
+        <div class="flex items-center justify-center gap-2">
+          <span class="text-2xl">🎮</span>
+          <p class="text-sm text-gray-800 dark:text-gray-200 font-bold">
+            Total de productos: 
+            <span class="text-red-600 dark:text-yellow-400 font-black text-lg ml-1">
+              {{ products.length }}
+            </span>
+          </p>
+        </div>
       </div>
     </div>
 
