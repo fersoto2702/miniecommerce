@@ -43,14 +43,6 @@ export class CheckoutComponent implements OnInit, OnDestroy {
   exp = '';
   saveCard = false;
 
-  // Dirección
-  address = {
-    street: '',
-    city: '',
-    country: '',
-    zip: ''
-  };
-
   // ============================
   // Validación y errores
   // ============================
@@ -83,7 +75,6 @@ export class CheckoutComponent implements OnInit, OnDestroy {
   // ============================
   cartItems: CartItem[] = [];
   subtotal = 0;
-  shipping = 15;
   taxes = 0;
   discount = 0;
   total = 0;
@@ -101,12 +92,11 @@ export class CheckoutComponent implements OnInit, OnDestroy {
   orderExpanded = true;
 
   // ============================
-  // Progress stepper
+  // Progress stepper (SIN ENVÍO)
   // ============================
-  currentStep = 2; // 0: Carrito, 1: Envío, 2: Pago, 3: Confirmación
+  currentStep = 1; // 0: Carrito, 1: Pago, 2: Confirmación
   steps = [
     { icon: '🛒', label: 'Carrito' },
-    { icon: '📦', label: 'Envío' },
     { icon: '💳', label: 'Pago' },
     { icon: '✓', label: 'Confirmación' }
   ];
@@ -133,19 +123,6 @@ export class CheckoutComponent implements OnInit, OnDestroy {
   userXP = 750;
   nextLevelXP = 1000;
   xpReward = 50;
-
-  // ============================
-  // Países
-  // ============================
-  countries: Country[] = [
-    { code: 'MX', name: 'México', flag: '🇲🇽' },
-    { code: 'US', name: 'Estados Unidos', flag: '🇺🇸' },
-    { code: 'ES', name: 'España', flag: '🇪🇸' },
-    { code: 'AR', name: 'Argentina', flag: '🇦🇷' },
-    { code: 'CO', name: 'Colombia', flag: '🇨🇴' },
-    { code: 'CL', name: 'Chile', flag: '🇨🇱' },
-    { code: 'PE', name: 'Perú', flag: '🇵🇪' }
-  ];
 
   constructor(
     private cartService: CartService,
@@ -193,14 +170,14 @@ export class CheckoutComponent implements OnInit, OnDestroy {
   }
 
   // ============================
-  // 💰 Calcular totales
+  // 💰 Calcular totales (SIN ENVÍO)
   // ============================
   calculateTotals() {
     this.subtotal = this.cartItems.reduce(
       (sum, item) => sum + (item.price * item.quantity), 0
     );
     this.taxes = Math.round(this.subtotal * 0.16 * 100) / 100;
-    this.total = this.subtotal + this.shipping + this.taxes - this.discount;
+    this.total = this.subtotal + this.taxes - this.discount;
     this.total = Math.round(this.total * 100) / 100;
   }
 
@@ -500,7 +477,7 @@ export class CheckoutComponent implements OnInit, OnDestroy {
         this.cartService.clear().subscribe();
         
         // Avanzar al siguiente paso
-        this.currentStep = 3;
+        this.currentStep = 2;
         
         // Redirigir después de 3 segundos
         setTimeout(() => {

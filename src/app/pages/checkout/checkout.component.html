@@ -26,13 +26,13 @@
 
   <div class="max-w-7xl mx-auto relative z-10">
     
-    <!-- Progress Stepper -->
+    <!-- Progress Stepper (3 pasos: Carrito → Pago → Confirmación) -->
     <div class="mb-8 bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6 border-2 border-yellow-400/30">
       <div class="flex items-center justify-between relative">
         <!-- Línea de progreso -->
         <div class="absolute top-5 left-0 right-0 h-1 bg-gray-200 dark:bg-gray-700 -z-10">
           <div class="h-full bg-gradient-to-r from-yellow-400 to-orange-500 transition-all duration-500"
-               [style.width.%]="(currentStep / 3) * 100"></div>
+               [style.width.%]="(currentStep / 2) * 100"></div>
         </div>
 
         <!-- Steps -->
@@ -109,15 +109,11 @@
               </p>
             </div>
 
-            <!-- Totales -->
+            <!-- Totales (SIN ENVÍO) -->
             <div class="space-y-2 border-t-2 border-gray-200 dark:border-gray-700 pt-4">
               <div class="flex justify-between text-sm">
                 <span class="text-gray-600 dark:text-gray-400">Subtotal:</span>
                 <span class="font-bold text-gray-800 dark:text-white">${{ subtotal.toFixed(2) }}</span>
-              </div>
-              <div class="flex justify-between text-sm">
-                <span class="text-gray-600 dark:text-gray-400">Envío:</span>
-                <span class="font-bold text-gray-800 dark:text-white">${{ shipping.toFixed(2) }}</span>
               </div>
               <div class="flex justify-between text-sm">
                 <span class="text-gray-600 dark:text-gray-400">Impuestos (16%):</span>
@@ -428,13 +424,18 @@
         🎮 <span class="font-bold text-yellow-600 dark:text-yellow-400">¡Gracias por tu compra!</span> Tu pedido será procesado de inmediato
       </p>
       
-      <!-- Testimonios -->
+      <!-- Badge de seguridad -->
       <div class="bg-white dark:bg-gray-800 rounded-xl p-4 max-w-2xl mx-auto border-2 border-purple-400/30">
+        <div class="flex items-center justify-center gap-2 text-sm">
+          <span class="text-2xl">🔒</span>
+          <span class="font-bold text-gray-700 dark:text-gray-300">Pago 100% Seguro</span>
         </div>
       </div>
     </div>
 
   </div>
+
+</div>
 
 <style>
 /* Animaciones de estrellas flotantes */
