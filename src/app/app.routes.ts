@@ -17,6 +17,7 @@ import { AdminGuard } from './guards/admin.guard';
 // Admin
 import { AdminDashboardComponent } from './admin/dashboard/admin-dashboard/admin-dashboard.component';
 import { AdminProductsComponent } from './admin/products/admin-products/admin-products.component';
+import { AdminCreateProductComponent } from './admin/products/admin-create-product/admin-create-product.component';
 import { AdminEditProductComponent } from './admin/products/admin-edit-product/admin-edit-product.component';
 import { AdminUsersComponent } from './admin/users/admin-users/admin-users.component';
 
@@ -57,6 +58,7 @@ export const routes: Routes = [
 
       { path: 'dashboard', component: AdminDashboardComponent },
       { path: 'products', component: AdminProductsComponent },
+      { path: 'products/create', component: AdminCreateProductComponent },
       { path: 'products/edit/:id', component: AdminEditProductComponent },
       { path: 'users', component: AdminUsersComponent }
     ]
