@@ -5,7 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
 import { Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { NotificationService } from '../../services/notification.service'; // ← NUEVO
+import { NotificationService } from '../../services/notification.service';
 
 @Component({
   selector: 'app-login',
@@ -19,11 +19,12 @@ export class LoginComponent {
   password = '';
   loading = false;
   errorMessage = '';
+  showPassword = false;
 
   constructor(
     private auth: AuthService, 
     private router: Router,
-    private notificationService: NotificationService // ← NUEVO
+    private notificationService: NotificationService
   ) {}
 
   submit() {
@@ -36,33 +37,71 @@ export class LoginComponent {
 
         if (!res.ok) {
           this.errorMessage = res.message;
-          // Notificación de error estilo Pokémon
           this.notificationService.error(res.message || 'Error al iniciar sesión 🔥');
           return;
         }
 
-        // ✨ ÉXITO - Notificación Pokémon (REEMPLAZA EL ALERT)
-        this.notificationService.success('¡Login exitoso! Bienvenido Administrador ⚡');
+        // ✨ Obtener datos del usuario
+        const userRole = res.user?.role || 'user';
+        const userName = res.user?.name || 'Usuario';
+
+        // 🎯 NOTIFICACIÓN SEGÚN EL ROL
+        if (userRole === 'admin') {
+          // Notificación para ADMIN
+          this.notificationService.success(
+            `¡Bienvenido ${userName}! Acceso al panel de administración 👑`,
+            3000,
+            'Admin'
+          );
+        } else {
+          // Notificación para USUARIO normal
+          this.notificationService.success(
+            `¡Bienvenido ${userName}! Disfruta de tu aventura Pokémon ⚡`,
+            3000,
+            'Entrenador'
+          );
+        }
 
         // Redirección según rol
         setTimeout(() => {
-            if (res.user.role === 'admin') {
-                this.router.navigate(['/admin']);
-            } else {
-                this.router.navigateByUrl('/home');
-            }
-        }, 50);
-
+          if (userRole === 'admin') {
+            this.router.navigate(['/admin']);
+          } else {
+            this.router.navigateByUrl('/home');
+          }
+        }, 1500); // Aumentado a 1.5s para que se vea la notificación
       },
       error: (err) => {
         this.loading = false;
         console.error(err);
         this.errorMessage = err.error?.message || 'Error en el servidor';
         
-        // Notificación de error del servidor estilo Pokémon
-        this.notificationService.error(
-          err.error?.message || 'Error en el servidor. Intenta de nuevo 🔥'
-        );
+        // Notificaciones específicas según el tipo de error
+        if (err.status === 401) {
+          this.notificationService.error(
+            'Email o contraseña incorrectos 🔥',
+            4000,
+            'Credenciales inválidas'
+          );
+        } else if (err.status === 404) {
+          this.notificationService.error(
+            'Usuario no encontrado. ¿Ya te registraste? 🔥',
+            4000,
+            'Usuario no existe'
+          );
+        } else if (err.status === 0) {
+          this.notificationService.error(
+            'No se puede conectar al servidor. Verifica tu conexión 🔥',
+            4000,
+            'Error de conexión'
+          );
+        } else {
+          this.notificationService.error(
+            err.error?.message || 'Error en el servidor. Intenta de nuevo 🔥',
+            4000,
+            'Error'
+          );
+        }
       }
     });
   }
