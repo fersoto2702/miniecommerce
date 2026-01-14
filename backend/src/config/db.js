@@ -4,15 +4,16 @@ require('dotenv').config();
 const sequelize = new Sequelize(
   process.env.DB_NAME,
   process.env.DB_USER,
-  process.env.DB_PASS,
+  process.env.DB_PASS, // Tercer argumento: Contraseña
   {
+    // Cuarto argumento: Objeto de configuración completo
     host: process.env.DB_HOST,
-    port: process.env.DB_PORT || 4000, // TiDB usa el 4000 por defecto
+    port: process.env.DB_PORT || 4000, 
     dialect: 'mysql',
     logging: false,
     dialectOptions: {
       ssl: {
-        // Esto es lo que permite que la conexión sea segura
+        // Aquí es donde Sequelize y mysql2 buscan el certificado
         ca: process.env.DB_CA_CERT, 
         rejectUnauthorized: true,
       },
