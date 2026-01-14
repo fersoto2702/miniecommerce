@@ -29,6 +29,40 @@ app.get('/', (req, res) => {
   res.json({ ok: true, message: 'API MiniEcommerce funcionando ✅' });
 });
 
+// 🔧 TEMPORAL: Endpoint de prueba sin DB para verificar conexión
+app.get('/test', (req, res) => {
+  res.json({
+    ok: true,
+    message: 'Conexión funcionando - backend reachable ✅',
+    timestamp: new Date().toISOString()
+  });
+});
+
+// 🔧 TEMPORAL: Mock login para probar conexión frontend-backend
+app.post('/api/auth/login', (req, res) => {
+  const { email, password } = req.body;
+
+  // Mock validation
+  if (email === 'test@test.com' && password === '123456') {
+    res.json({
+      ok: true,
+      token: 'mock_jwt_token_123',
+      user: {
+        id: 1,
+        name: 'Usuario Test',
+        email: 'test@test.com',
+        role: 'user'
+      },
+      message: 'Login exitoso (mock)'
+    });
+  } else {
+    res.status(401).json({
+      ok: false,
+      message: 'Credenciales incorrectas'
+    });
+  }
+});
+
 // Sincronizar modelos
 syncModels().then(() => {
   console.log('✅ Modelos sincronizados');
