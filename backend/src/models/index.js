@@ -34,7 +34,7 @@ async function syncModels() {
     await sequelize.authenticate();
     console.log('✅ Conectado a MySQL');
 
-    await sequelize.sync({ alter: false });
+    await sequelize.sync({ alter: true });
     console.log('✅ Modelos sincronizados');
   } catch (err) {
     console.error('❌ Error al sincronizar modelos:', err.message);

@@ -29,9 +29,17 @@ app.get('/', (req, res) => {
   res.json({ ok: true, message: 'API MiniEcommerce funcionando ✅' });
 });
 
-// Sincronizar modelos y levantar servidor
+// Sincronizar modelos
 syncModels().then(() => {
+  console.log('✅ Modelos sincronizados');
+});
+
+// Exportar la app para Vercel (serverless)
+module.exports = app;
+
+// Para desarrollo local
+if (require.main === module) {
   app.listen(PORT, () => {
     console.log(`🚀 Servidor escuchando en http://localhost:${PORT}`);
   });
-});
+}
