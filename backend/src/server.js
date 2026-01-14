@@ -63,9 +63,12 @@ app.post('/api/auth/login', (req, res) => {
   }
 });
 
-// Sincronizar modelos
+// Sincronizar modelos (no bloquear el inicio del servidor si falla)
 syncModels().then(() => {
   console.log('✅ Modelos sincronizados');
+}).catch((err) => {
+  console.warn('⚠️ No se pudieron sincronizar los modelos:', err.message);
+  console.warn('🔧 Modo mock activado - usando endpoints sin base de datos');
 });
 
 // Exportar la app para Vercel (serverless)
