@@ -28,7 +28,9 @@ export class UserService {
   return this.http.get(`${this.apiURL}/users`, { headers });
 }
   // user.service.ts
-createUser(userData: { name: string; email: string; password: string; role: string }) {
-  return this.http.post(`${this.apiURL}/auth/register`, userData);
+createUser(userData: any) {
+  const token = localStorage.getItem('token') || ''; // Evita que sea null
+  const headers = { 'x-auth-token': token };
+  return this.http.post(`${this.apiURL}/register`, userData, { headers });
 }
 }
