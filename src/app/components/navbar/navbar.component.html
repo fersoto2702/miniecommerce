@@ -63,79 +63,16 @@
 
         <!-- Usuario logueado -->
         <ng-container *ngIf="user; else guest">
-          
-          <!-- 🆕 Usuario con menú desplegable -->
-          <div class="relative" #userMenuContainer>
-            <button 
-              (click)="toggleUserMenu()"
-              class="hidden sm:flex items-center gap-2 bg-white dark:bg-gray-800 px-4 py-2 rounded-xl border-2 border-yellow-400 shadow-lg hover:border-yellow-500 hover:scale-105 transition-all cursor-pointer">
-              <span class="text-xl">👤</span>
-              <span class="font-bold text-gray-800 dark:text-white">{{ user.name }}</span>
-              <svg class="w-4 h-4 text-gray-600 dark:text-gray-300 transition-transform duration-300" 
-                   [class.rotate-180]="userMenuOpen"
-                   fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-              </svg>
-            </button>
-
-            <!-- 🆕 Dropdown Menu -->
-            <div *ngIf="userMenuOpen"
-                 class="absolute right-0 top-full mt-2 w-64 bg-white dark:bg-gray-800 rounded-xl shadow-2xl border-2 border-yellow-400 overflow-hidden animate-slide-down z-50">
-              
-              <!-- Header del menú -->
-              <div class="bg-gradient-to-r from-red-500 to-yellow-500 p-4 border-b-2 border-yellow-400">
-                <div class="flex items-center gap-3">
-                  <div class="w-12 h-12 bg-white rounded-full flex items-center justify-center text-2xl border-2 border-yellow-400 shadow-lg">
-                    👤
-                  </div>
-                  <div class="flex-1 min-w-0">
-                    <p class="font-black text-white text-sm truncate">{{ user.name }}</p>
-                    <p class="text-xs text-white/80 font-semibold truncate">{{ user.email }}</p>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Opciones del menú -->
-              <div class="py-2">
-                <a routerLink="/profile" 
-                   (click)="closeUserMenu()"
-                   class="flex items-center gap-3 px-4 py-3 hover:bg-yellow-50 dark:hover:bg-gray-700 transition-colors cursor-pointer group">
-                  <span class="text-xl group-hover:scale-110 transition-transform">👤</span>
-                  <span class="font-bold text-gray-700 dark:text-gray-200">Mi Perfil</span>
-                </a>
-
-                <a routerLink="/orders" 
-                   (click)="closeUserMenu()"
-                   class="flex items-center gap-3 px-4 py-3 hover:bg-yellow-50 dark:hover:bg-gray-700 transition-colors cursor-pointer group">
-                  <span class="text-xl group-hover:scale-110 transition-transform">🛒</span>
-                  <span class="font-bold text-gray-700 dark:text-gray-200">Mis Pedidos</span>
-                </a>
-
-                <a routerLink="/settings" 
-                   (click)="closeUserMenu()"
-                   class="flex items-center gap-3 px-4 py-3 hover:bg-yellow-50 dark:hover:bg-gray-700 transition-colors cursor-pointer group">
-                  <span class="text-xl group-hover:scale-110 transition-transform">⚙️</span>
-                  <span class="font-bold text-gray-700 dark:text-gray-200">Configuración</span>
-                </a>
-
-                <!-- Separador -->
-                <div class="border-t-2 border-gray-200 dark:border-gray-700 my-2"></div>
-
-                <button 
-                  (click)="logout()"
-                  class="w-full flex items-center gap-3 px-4 py-3 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors cursor-pointer group">
-                  <span class="text-xl group-hover:scale-110 transition-transform">🚪</span>
-                  <span class="font-bold text-red-600 dark:text-red-400">Cerrar Sesión</span>
-                </button>
-              </div>
-            </div>
+          <div class="hidden sm:flex items-center gap-2 bg-white dark:bg-gray-800 px-4 py-2 rounded-xl border-2 border-yellow-400 shadow-lg">
+            <span class="text-xl">👤</span>
+            <span class="font-bold text-gray-800 dark:text-white">{{ user.name }}</span>
           </div>
 
-          <!-- Botón logout solo en móvil -->
           <button 
             (click)="logout()" 
-            class="sm:hidden bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700 text-white font-bold p-2 rounded-xl transition-all duration-300 transform hover:scale-105 shadow-lg border-2 border-red-700">
+            class="bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700 text-white font-bold px-4 py-2 rounded-xl transition-all duration-300 transform hover:scale-105 shadow-lg border-2 border-red-700 flex items-center gap-2">
             <span class="text-lg">🚪</span>
+            <span class="hidden sm:inline">Salir</span>
           </button>
         </ng-container>
 
@@ -183,30 +120,6 @@
         class="block px-4 py-3 rounded-xl font-bold text-white bg-blue-600 hover:bg-blue-500 transition-all duration-300 border-2 border-blue-700 shadow-lg">
         ⚙️ Admin
       </a>
-
-      <!-- 🆕 Opciones de usuario en móvil -->
-      <div *ngIf="user" class="space-y-2 pt-2 border-t-2 border-yellow-400">
-        <a 
-          routerLink="/profile" 
-          (click)="toggleMenu()"
-          class="block px-4 py-3 rounded-xl font-bold text-white bg-white/10 hover:bg-yellow-400 hover:text-red-700 transition-all duration-300 border-2 border-white/20 hover:border-yellow-500 shadow-lg">
-          👤 Mi Perfil
-        </a>
-
-        <a 
-          routerLink="/orders" 
-          (click)="toggleMenu()"
-          class="block px-4 py-3 rounded-xl font-bold text-white bg-white/10 hover:bg-yellow-400 hover:text-red-700 transition-all duration-300 border-2 border-white/20 hover:border-yellow-500 shadow-lg">
-          🛒 Mis Pedidos
-        </a>
-
-        <a 
-          routerLink="/settings" 
-          (click)="toggleMenu()"
-          class="block px-4 py-3 rounded-xl font-bold text-white bg-white/10 hover:bg-yellow-400 hover:text-red-700 transition-all duration-300 border-2 border-white/20 hover:border-yellow-500 shadow-lg">
-          ⚙️ Configuración
-        </a>
-      </div>
 
       <!-- Info de usuario en móvil -->
       <div *ngIf="user" class="px-4 py-3 bg-white dark:bg-gray-800 rounded-xl border-2 border-yellow-400 shadow-lg">

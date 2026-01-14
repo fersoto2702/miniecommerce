@@ -18,4 +18,9 @@ export class UserService {
   getAllUsers(): Observable<any> {
     return this.http.get(`${this.apiURL}/users`);
   }
+
+  // user.service.ts
+createUser(userData: { name: string; email: string; password: string; role: string }) {
+  return this.http.post(`${this.apiURL}/auth/register`, userData);
+}
 }

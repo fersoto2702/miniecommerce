@@ -20,6 +20,7 @@ import { AdminProductsComponent } from './admin/products/admin-products/admin-pr
 import { AdminCreateProductComponent } from './admin/products/admin-create-product/admin-create-product.component';
 import { AdminEditProductComponent } from './admin/products/admin-edit-product/admin-edit-product.component';
 import { AdminUsersComponent } from './admin/users/admin-users/admin-users.component';
+import { AdminUserCreateComponent } from './admin/pages/admin-user-create/admin-user-create.component';
 
 export const routes: Routes = [
 
@@ -56,11 +57,16 @@ export const routes: Routes = [
         pathMatch: 'full'
       },
 
+      {
+        path: 'users/create',
+        component: AdminUserCreateComponent
+      },
+
       { path: 'dashboard', component: AdminDashboardComponent },
       { path: 'products', component: AdminProductsComponent },
       { path: 'products/create', component: AdminCreateProductComponent },
       { path: 'products/edit/:id', component: AdminEditProductComponent },
-      { path: 'users', component: AdminUsersComponent }
+      { path: 'users', component: AdminUsersComponent },
     ]
   },
 

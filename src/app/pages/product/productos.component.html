@@ -4,7 +4,33 @@
   <!-- Barra de búsqueda -->
   <app-search-bar (searchEvent)="onSearch($event)"></app-search-bar>
 
+  <!-- Lista de productos -->
   <div class="mt-6">
-    <app-product-list [products]="filtered"></app-product-list>
+    <app-product-list [products]="paginated"></app-product-list>
+  </div>
+
+  <!-- Paginación -->
+  <div
+    *ngIf="totalPages > 1"
+    class="flex justify-center items-center gap-4 mt-8">
+
+    <button
+      (click)="goToPage(currentPage - 1)"
+      [disabled]="currentPage === 1"
+      class="px-4 py-2 rounded-lg font-bold bg-gray-200 hover:bg-gray-300 disabled:opacity-50">
+      ⬅ Anterior
+    </button>
+
+    <span class="font-semibold">
+      Página {{ currentPage }} de {{ totalPages }}
+    </span>
+
+    <button
+      (click)="goToPage(currentPage + 1)"
+      [disabled]="currentPage === totalPages"
+      class="px-4 py-2 rounded-lg font-bold bg-gray-200 hover:bg-gray-300 disabled:opacity-50">
+      Siguiente ➡
+    </button>
+
   </div>
 </div>
