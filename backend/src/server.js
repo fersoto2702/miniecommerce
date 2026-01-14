@@ -63,18 +63,19 @@ app.post('/api/auth/login', (req, res) => {
   }
 });
 
-// Sincronizar modelos SOLO en desarrollo local
-if (require.main === module) {
-  // Solo sincronizar en desarrollo local, no en serverless
-  syncModels().then(() => {
-    console.log('✅ Modelos sincronizados');
-  }).catch((err) => {
-    console.warn('⚠️ No se pudieron sincronizar los modelos:', err.message);
-    console.warn('🔧 Modo mock activado - usando endpoints sin base de datos');
-  });
-} else {
-  console.log('🔧 Serverless mode - skipping database sync, using mock endpoints');
-}
+// Sincronizar modelos (con manejo de errores para producción)
+syncModels().then(() => {
+  console.log('✅ Modelos sincronizados');
+}).catch((err) => {
+  console.error('❌ Error al sincronizar modelos:', err.message);
+  // En producción, no salir del proceso - permitir que la app siga funcionando
+  if (require.main === module) {
+    console.error('🔧 Modo desarrollo: saliendo por error de DB');
+    process.exit(1);
+  } else {
+    console.warn('🔧 Modo serverless: continuando sin sincronización de DB');
+  }
+});
 
 // Exportar la app para Vercel (serverless)
 module.exports = app;
