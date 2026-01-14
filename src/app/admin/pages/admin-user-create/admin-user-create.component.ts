@@ -29,7 +29,6 @@ export class AdminUserCreateComponent {
   ) {}
 
   createUser() {
-    // Validación básica antes de enviar
     if (!this.user.name || !this.user.email || !this.user.password) {
       this.notificationService.warning('Todos los campos son requeridos');
       return;
@@ -39,12 +38,12 @@ export class AdminUserCreateComponent {
 
     this.userService.createUser(this.user).subscribe({
       next: () => {
-        this.notificationService.success('¡Usuario creado exitosamente!');
+        this.notificationService.success('¡Usuario creado con éxito!');
+        // Redirigimos a la tabla. El ngOnInit de AdminUsersComponent se encargará de refrescar la lista.
         this.router.navigate(['/admin/users']);
       },
       error: (err) => {
         console.error('Error al crear usuario:', err);
-        // Intentamos obtener el mensaje de error del backend si existe
         const msg = err.error?.message || 'Error al crear el usuario';
         this.notificationService.error(msg);
         this.loading = false;

@@ -28,34 +28,39 @@ export class AdminUsersComponent implements OnInit {
 
   // =================================================
   // 🔵 Cargar usuarios desde el BACKEND
-  // GET /api/auth/users  (solo admin)
   // =================================================
   loadUsers() {
     this.loading = true;
 
     this.userService.getAllUsers().subscribe({
       next: (res: any) => {
-        this.users = res.users || [];
+        // Manejo flexible de la respuesta (Array o Objeto con propiedad users)
+        if (Array.isArray(res)) {
+          this.users = res;
+        } else if (res && res.users) {
+          this.users = res.users;
+        } else {
+          this.users = [];
+        }
         this.loading = false;
       },
-      error: () => {
-        this.notificationService.error('Error al cargar usuarios (¿Eres admin?)');
+      error: (err) => {
+        console.error('Error al cargar usuarios:', err);
+        this.notificationService.error('Error al cargar usuarios (¿Sesión expirada?)');
         this.loading = false;
       }
     });
   }
 
   // =================================================
-  // ➕ Crear nuevo usuario
+  // ➕ Navegar a la creación de usuario
   // =================================================
   createNewUser() {
-    // Opción 1: Redirigir a una página de formulario
+    // Usamos la ruta corregida que definimos en app.routes.ts
     this.router.navigate(['/admin/users/create']);
-    
-    // Opción 2: Abrir un modal (si prefieres esta opción, dímelo)
   }
 
-  // Getters para contar usuarios por rol
+  // Getters para las estadísticas del footer
   get totalAdmins(): number {
     return this.users.filter(u => u.role === 'admin').length;
   }

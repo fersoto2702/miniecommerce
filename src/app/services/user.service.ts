@@ -16,9 +16,17 @@ export class UserService {
   // GET /api/auth/users
   // ============================================
   getAllUsers(): Observable<any> {
-    return this.http.get(`${this.apiURL}/users`);
-  }
+  // 1. Obtenemos el token y nos aseguramos de que sea un string (si es null, usamos '')
+  const token = localStorage.getItem('token') || ''; 
 
+  // 2. Definimos los headers asegurando que el valor sea string
+  const headers = { 
+    'x-auth-token': token 
+  };
+
+  // 3. Pasamos los headers en el objeto de opciones
+  return this.http.get(`${this.apiURL}/users`, { headers });
+}
   // user.service.ts
 createUser(userData: { name: string; email: string; password: string; role: string }) {
   return this.http.post(`${this.apiURL}/auth/register`, userData);
