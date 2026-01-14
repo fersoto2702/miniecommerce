@@ -1,4 +1,7 @@
-const { Cart, Order, OrderItem, Product } = require('../models');
+const { Cart, Order, OrderItem, Product, User } = require('../models');
+const PDFDocument = require('pdfkit');
+const fs = require('fs');
+const path = require('path');
 
 // =======================================================
 //  POST /api/orders/from-cart
@@ -114,8 +117,128 @@ async function getAllOrders(req, res) {
   }
 }
 
+// =======================================================
+// Función auxiliar para generar PDF
+// =======================================================
+async function generateOrderPDF(order, orderItems, user) {
+  return new Promise((resolve, reject) => {
+    try {
+      // Crear directorio de PDFs si no existe
+      const pdfsDir = path.join(__dirname, '../pdfs');
+      if (!fs.existsSync(pdfsDir)) {
+        fs.mkdirSync(pdfsDir, { recursive: true });
+      }
+
+      const filename = `order_${order.id}_${Date.now()}.pdf`;
+      const filepath = path.join(pdfsDir, filename);
+
+      const doc = new PDFDocument();
+
+      // Pipe to file
+      const stream = fs.createWriteStream(filepath);
+      doc.pipe(stream);
+
+      // Encabezado
+      doc.fontSize(20).text('Recibo de Compra', { align: 'center' });
+      doc.moveDown();
+
+      // Información de la orden
+      doc.fontSize(12);
+      doc.text(`Número de Orden: ${order.id}`);
+      doc.text(`Fecha: ${new Date(order.createdAt).toLocaleDateString()}`);
+      doc.text(`Cliente: ${user.name} (${user.email})`);
+      doc.moveDown();
+
+      // Detalles de productos
+      doc.fontSize(14).text('Productos:', { underline: true });
+      doc.moveDown(0.5);
+
+      orderItems.forEach(item => {
+        doc.fontSize(10);
+        doc.text(`${item.quantity}x ${item.Product.name}`);
+        doc.text(`Precio unitario: $${item.price}`);
+        doc.text(`Subtotal: $${item.subtotal}`);
+        doc.moveDown(0.5);
+      });
+
+      // Total
+      doc.moveDown();
+      doc.fontSize(14).text(`Total: $${order.total}`, { align: 'right' });
+
+      // Método de pago
+      doc.moveDown();
+      doc.fontSize(12).text('Estado del pago: Pagado');
+
+      // Pie de página
+      doc.moveDown(2);
+      doc.fontSize(8).text('Gracias por su compra!', { align: 'center' });
+
+      doc.end();
+
+      stream.on('finish', () => {
+        resolve(filepath);
+      });
+
+      stream.on('error', (err) => {
+        reject(err);
+      });
+
+    } catch (error) {
+      reject(error);
+    }
+  });
+}
+
+// =======================================================
+//  POST /api/orders/process-payment
+//  Procesar pago exitoso y generar PDF
+// =======================================================
+async function processPayment(req, res) {
+  try {
+    const { orderId, paymentMethod } = req.body;
+    const userId = req.user.id;
+
+    // Obtener la orden
+    const order = await Order.findOne({
+      where: { id: orderId, userId },
+      include: [
+        { model: OrderItem, include: [Product] },
+        { model: User, as: 'User' }
+      ]
+    });
+
+    if (!order) {
+      return res.status(404).json({ ok: false, message: 'Orden no encontrada' });
+    }
+
+    if (order.status === 'paid') {
+      return res.status(400).json({ ok: false, message: 'La orden ya está pagada' });
+    }
+
+    // Generar PDF
+    const pdfPath = await generateOrderPDF(order, order.OrderItems, order.User);
+
+    // Actualizar orden con status 'paid' y pdfPath
+    await order.update({
+      status: 'paid',
+      pdfPath: pdfPath
+    });
+
+    return res.json({
+      ok: true,
+      message: 'Pago procesado exitosamente',
+      pdfPath: pdfPath
+    });
+
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ ok: false, message: 'Error al procesar el pago' });
+  }
+}
+
 module.exports = {
   createOrderFromCart,
   getMyOrders,
-  getAllOrders
+  getAllOrders,
+  processPayment
 };

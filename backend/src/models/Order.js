@@ -18,6 +18,10 @@ const Order = sequelize.define(
       type: DataTypes.ENUM('pending', 'paid', 'cancelled'),
       allowNull: false,
       defaultValue: 'pending'
+    },
+    pdfPath: {
+      type: DataTypes.STRING,
+      allowNull: true
     }
   },
   {

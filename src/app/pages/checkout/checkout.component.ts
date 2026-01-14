@@ -465,28 +465,40 @@ export class CheckoutComponent implements OnInit, OnDestroy {
     // Simular procesamiento
     await new Promise(resolve => setTimeout(resolve, 2000));
 
+    // Crear orden primero
     this.cartService.createOrderFromCart().subscribe({
-      next: () => {
-        this.isProcessing = false;
-        this.paymentSuccess = true;
-        
-        // Mostrar confetti
-        this.triggerConfetti();
-        
-        // Limpiar carrito
-        this.cartService.clear().subscribe();
-        
-        // Avanzar al siguiente paso
-        this.currentStep = 2;
-        
-        // Redirigir después de 3 segundos
-        setTimeout(() => {
-          this.router.navigate(['/home']);
-        }, 3000);
+      next: (orderRes: any) => {
+        const orderId = orderRes.orderId;
+
+        // Procesar pago y generar PDF
+        this.cartService.processPayment(orderId, 'card').subscribe({
+          next: (paymentRes: any) => {
+            this.isProcessing = false;
+            this.paymentSuccess = true;
+
+            // Mostrar confetti
+            this.triggerConfetti();
+
+            // Limpiar carrito
+            this.cartService.clear().subscribe();
+
+            // Avanzar al siguiente paso
+            this.currentStep = 2;
+
+            // Redirigir después de 3 segundos
+            setTimeout(() => {
+              this.router.navigate(['/home']);
+            }, 3000);
+          },
+          error: () => {
+            this.isProcessing = false;
+            alert('❌ Error al procesar el pago. Intenta nuevamente.');
+          }
+        });
       },
       error: () => {
         this.isProcessing = false;
-        alert('❌ Error al procesar el pago. Intenta nuevamente.');
+        alert('❌ Error al crear la orden. Intenta nuevamente.');
       }
     });
   }
@@ -556,15 +568,31 @@ export class CheckoutComponent implements OnInit, OnDestroy {
 
       onApprove: (data: any, actions: any) => {
         return actions.order.capture().then(() => {
-          this.paymentSuccess = true;
-          this.triggerConfetti();
-          
-          this.cartService.createOrderFromCart().subscribe(() => {
-            this.cartService.clear().subscribe();
-            
-            setTimeout(() => {
-              this.router.navigate(['/home']);
-            }, 2000);
+          // Crear orden primero
+          this.cartService.createOrderFromCart().subscribe({
+            next: (orderRes: any) => {
+              const orderId = orderRes.orderId;
+
+              // Procesar pago y generar PDF
+              this.cartService.processPayment(orderId, 'paypal').subscribe({
+                next: (paymentRes: any) => {
+                  this.paymentSuccess = true;
+                  this.triggerConfetti();
+
+                  this.cartService.clear().subscribe();
+
+                  setTimeout(() => {
+                    this.router.navigate(['/home']);
+                  }, 2000);
+                },
+                error: () => {
+                  alert('❌ Error al procesar el pago de PayPal.');
+                }
+              });
+            },
+            error: () => {
+              alert('❌ Error al crear la orden con PayPal.');
+            }
           });
         });
       },

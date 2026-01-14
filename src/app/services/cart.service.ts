@@ -83,4 +83,14 @@ export class CartService {
   createOrderFromCart() {
     return this.http.post(`${this.orderURL}/from-cart`, {});
   }
+
+  // ============================================================
+  // 🔹 Procesar pago
+  // ============================================================
+  processPayment(orderId: number, paymentMethod: string) {
+    return this.http.post(`${this.orderURL}/process-payment`, {
+      orderId,
+      paymentMethod
+    });
+  }
 }
