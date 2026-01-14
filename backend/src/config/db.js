@@ -8,25 +8,18 @@ const sequelize = new Sequelize(
   {
     // Cuarto argumento: Objeto de configuración completo
     host: process.env.DB_HOST,
-    port: process.env.DB_PORT || 4000, 
+    port: process.env.DB_PORT || 3306,
     dialect: 'mysql',
     logging: false,
-    dialectOptions: {
-      ssl: {
-        // Aquí es donde Sequelize y mysql2 buscan el certificado
-        ca: process.env.DB_CA_CERT, 
-        rejectUnauthorized: true,
-      },
-    },
   }
 );
 
 async function testConnection() {
   try {
     await sequelize.authenticate();
-    console.log('✅ Conexión a TiDB Cloud OK');
+    console.log('✅ Conexión a MySQL OK');
   } catch (err) {
-    console.error('❌ Error conectando a TiDB Cloud:', err);
+    console.error('❌ Error conectando a MySQL:', err);
   }
 }
 

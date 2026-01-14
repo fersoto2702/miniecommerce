@@ -13,12 +13,8 @@ const orderRoutes = require('./routes/order.routes');
 const app = express();
 const PORT = process.env.PORT || 4000;
 
-// ✅ Middlewares - Configuración de CORS Profesional
-app.use(cors({
-  origin: 'https://miniecommerce-three.vercel.app',
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  credentials: true
-}));
+// Middlewares
+app.use(cors());
 
 app.use(express.json());
 
@@ -41,21 +37,19 @@ app.get('/test', (req, res) => {
   });
 });
 
-// Sincronizar modelos
-syncModels().then(() => {
-  console.log('✅ Modelos sincronizados');
-}).catch((err) => {
-  console.error('❌ Error al sincronizar modelos:', err.message);
-  if (require.main === module) {
-    process.exit(1);
-  }
-});
-
 // Exportar para Vercel
 module.exports = app;
 
 // Desarrollo local
 if (require.main === module) {
+  // Sincronizar modelos SOLO en desarrollo local
+  syncModels().then(() => {
+    console.log('✅ Modelos sincronizados');
+  }).catch((err) => {
+    console.error('❌ Error al sincronizar modelos:', err.message);
+    process.exit(1);
+  });
+
   app.listen(PORT, () => {
     console.log(`🚀 Servidor escuchando en http://localhost:${PORT}`);
   });
