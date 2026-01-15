@@ -1,9 +1,88 @@
-<div class="w-full">
-  <input
-    type="text"
-    [(ngModel)]="term"
-    (keydown.enter)="emitSearch()"
-    placeholder="Buscar..."
-    class="px-3 py-2 rounded border w-full"
-  />
+<div class="w-full relative group">
+  <!-- Input de búsqueda -->
+  <div class="relative">
+    <!-- Icono de búsqueda -->
+    <div class="absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none">
+      <svg class="w-5 h-5 text-gray-400 group-focus-within:text-blue-500 transition-colors" 
+           fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+              d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+      </svg>
+    </div>
+
+    <!-- Input principal -->
+    <input
+      type="text"
+      [(ngModel)]="term"
+      (keydown.enter)="emitSearch()"
+      (input)="onInputChange()"
+      placeholder="Buscar productos Pokémon..."
+      class="w-full pl-12 pr-24 py-3.5 bg-white dark:bg-gray-800 border-2 border-gray-300 dark:border-gray-600 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 font-medium
+             focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 
+             transition-all duration-300 shadow-sm hover:shadow-md
+             group-focus-within:border-blue-500"
+    />
+
+    <!-- Botón limpiar (X) -->
+    <button 
+      *ngIf="term"
+      (click)="clearSearch()"
+      type="button"
+      class="absolute right-16 top-1/2 -translate-y-1/2 w-7 h-7 flex items-center justify-center rounded-full bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-400 hover:bg-gray-300 dark:hover:bg-gray-600 hover:text-gray-800 dark:hover:text-gray-200 transition-all duration-200 hover:scale-110 active:scale-95">
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+      </svg>
+    </button>
+
+    <!-- Botón buscar -->
+    <button 
+      (click)="emitSearch()"
+      type="button"
+      class="absolute right-2 top-1/2 -translate-y-1/2 px-4 py-2 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-bold rounded-lg transition-all duration-200 shadow-md hover:shadow-lg transform hover:scale-105 active:scale-95 flex items-center gap-1.5">
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+              d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+      </svg>
+      <span class="hidden sm:inline text-sm">Buscar</span>
+    </button>
+  </div>
+
+  <!-- Badge de resultados (opcional) -->
+  <div *ngIf="showResults && term" 
+       class="absolute top-full left-0 right-0 mt-2 bg-white dark:bg-gray-800 rounded-lg shadow-xl border-2 border-blue-400 dark:border-blue-600 p-3 z-50 animate-slide-down">
+    <p class="text-sm text-gray-600 dark:text-gray-400 font-medium">
+      🔍 Buscando: <span class="font-bold text-gray-900 dark:text-white">"{{ term }}"</span>
+    </p>
+  </div>
+
+  <!-- Sugerencias rápidas (opcional) -->
+  <div *ngIf="showSuggestions && !term" 
+       class="absolute top-full left-0 right-0 mt-2 bg-white dark:bg-gray-800 rounded-lg shadow-xl border-2 border-gray-300 dark:border-gray-600 p-3 z-50 animate-slide-down">
+    <p class="text-xs text-gray-500 dark:text-gray-400 font-semibold mb-2">💡 Búsquedas populares:</p>
+    <div class="flex flex-wrap gap-2">
+      <button 
+        *ngFor="let suggestion of suggestions"
+        (click)="selectSuggestion(suggestion)"
+        class="px-3 py-1.5 bg-gray-100 dark:bg-gray-700 hover:bg-blue-100 dark:hover:bg-blue-900/30 text-gray-700 dark:text-gray-300 rounded-full text-xs font-medium transition-all hover:scale-105">
+        {{ suggestion }}
+      </button>
+    </div>
+  </div>
 </div>
+
+<style>
+@keyframes slide-down {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-slide-down {
+  animation: slide-down 0.3s ease-out;
+}
+</style>
