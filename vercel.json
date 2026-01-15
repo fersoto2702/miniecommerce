@@ -3,11 +3,22 @@
   "buildCommand": "npm run build",
   "outputDirectory": "dist/miniecommerce/browser",
   "installCommand": "npm install",
-  "framework": "angular",
+  "framework": null,
   "rewrites": [
     {
       "source": "/(.*)",
       "destination": "/index.html"
+    }
+  ],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-cache"
+        }
+      ]
     }
   ]
 }
