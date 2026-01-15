@@ -1,36 +1,187 @@
-<div class="max-w-7xl mx-auto p-6">
-  <h1 class="text-3xl font-bold mb-4">Productos</h1>
-
-  <!-- Barra de búsqueda -->
-  <app-search-bar (searchEvent)="onSearch($event)"></app-search-bar>
-
-  <!-- Lista de productos -->
-  <div class="mt-6">
-    <app-product-list [products]="paginated"></app-product-list>
+<div class="min-h-screen bg-gradient-to-br from-red-50 via-yellow-50 to-blue-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 py-8">
+  
+  <!-- Pokéballs decorativas de fondo -->
+  <div class="fixed inset-0 pointer-events-none opacity-5 overflow-hidden">
+    <div class="absolute top-20 left-10 w-32 h-32 rounded-full bg-gradient-to-br from-red-500 to-white"></div>
+    <div class="absolute bottom-40 right-20 w-40 h-40 rounded-full bg-gradient-to-br from-blue-500 to-white"></div>
+    <div class="absolute top-1/2 right-1/3 w-24 h-24 rounded-full bg-gradient-to-br from-yellow-500 to-white"></div>
   </div>
 
-  <!-- Paginación -->
-  <div
-    *ngIf="totalPages > 1"
-    class="flex justify-center items-center gap-4 mt-8">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 relative z-10">
+    
+    <!-- Header con diseño Pokémon -->
+    <div class="mb-8 relative">
+      <div class="absolute inset-0 bg-gradient-to-r from-red-500/20 via-yellow-500/20 to-blue-500/20 rounded-2xl blur-2xl"></div>
+      <div class="relative bg-gradient-to-r from-red-500/10 via-yellow-500/10 to-blue-500/10 backdrop-blur-sm rounded-2xl p-6 border-2 border-red-400/30 dark:border-red-600/30">
+        <div class="flex items-center justify-between flex-wrap gap-4">
+          <div>
+            <h1 class="text-4xl md:text-5xl font-black bg-gradient-to-r from-red-500 via-yellow-500 to-blue-500 bg-clip-text text-transparent mb-2 flex items-center gap-3">
+              🎮 Catálogo de Productos
+            </h1>
+            <p class="text-gray-600 dark:text-gray-400 font-semibold">
+              Encuentra los mejores productos Pokémon
+            </p>
+          </div>
+          
+          <!-- Badge con total de productos -->
+          <div class="bg-gradient-to-r from-blue-500 to-cyan-500 text-white px-6 py-3 rounded-xl shadow-lg border-2 border-blue-400">
+            <p class="text-xs font-bold opacity-90">Total de productos</p>
+            <p class="text-3xl font-black">{{ products.length }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
 
-    <button
-      (click)="goToPage(currentPage - 1)"
-      [disabled]="currentPage === 1"
-      class="px-4 py-2 rounded-lg font-bold bg-gray-200 hover:bg-gray-300 disabled:opacity-50">
-      ⬅ Anterior
-    </button>
+    <!-- Barra de búsqueda mejorada -->
+    <div class="mb-8">
+      <app-search-bar (searchEvent)="onSearch($event)"></app-search-bar>
+    </div>
 
-    <span class="font-semibold">
-      Página {{ currentPage }} de {{ totalPages }}
-    </span>
+    <!-- Mensaje de resultados de búsqueda -->
+    <div *ngIf="searchTerm" 
+         class="mb-6 bg-blue-100 dark:bg-blue-900/30 border-2 border-blue-400 dark:border-blue-600 rounded-xl p-4 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <span class="text-2xl">🔍</span>
+        <div>
+          <p class="font-bold text-gray-900 dark:text-white">
+            Resultados para: <span class="text-blue-600 dark:text-blue-400">"{{ searchTerm }}"</span>
+          </p>
+          <p class="text-sm text-gray-600 dark:text-gray-400">
+            {{ filtered.length }} producto(s) encontrado(s)
+          </p>
+        </div>
+      </div>
+      <button 
+        (click)="clearSearch()"
+        class="px-4 py-2 bg-white dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 font-bold rounded-lg transition-all hover:scale-105 flex items-center gap-2">
+        <span>✕</span>
+        <span>Limpiar</span>
+      </button>
+    </div>
 
-    <button
-      (click)="goToPage(currentPage + 1)"
-      [disabled]="currentPage === totalPages"
-      class="px-4 py-2 rounded-lg font-bold bg-gray-200 hover:bg-gray-300 disabled:opacity-50">
-      Siguiente ➡
-    </button>
+    <!-- Estado: Cargando -->
+    <div *ngIf="loading" class="flex items-center justify-center min-h-[400px]">
+      <div class="text-center">
+        <div class="relative w-20 h-20 mx-auto mb-6 animate-spin">
+          <div class="w-full h-full rounded-full bg-gradient-to-br from-red-500 to-white shadow-2xl shadow-red-500/50">
+            <div class="absolute top-1/2 left-0 right-0 h-2 bg-gray-900 -translate-y-1/2"></div>
+            <div class="absolute top-1/2 left-1/2 w-6 h-6 bg-white rounded-full border-4 border-gray-900 -translate-x-1/2 -translate-y-1/2 shadow-lg"></div>
+          </div>
+        </div>
+        <p class="text-gray-600 dark:text-gray-300 text-lg font-bold animate-pulse">
+          ⚡ Cargando productos...
+        </p>
+      </div>
+    </div>
+
+    <!-- Estado: Sin resultados -->
+    <div *ngIf="!loading && filtered.length === 0"
+         class="flex items-center justify-center min-h-[400px]">
+      <div class="text-center max-w-md">
+        <div class="w-32 h-32 mx-auto mb-6 bg-gradient-to-br from-gray-200 to-gray-300 dark:from-gray-700 dark:to-gray-800 rounded-full flex items-center justify-center">
+          <span class="text-6xl">🔍</span>
+        </div>
+        <h3 class="text-2xl font-black text-gray-800 dark:text-white mb-3">
+          No se encontraron productos
+        </h3>
+        <p class="text-gray-600 dark:text-gray-400 mb-6">
+          Intenta con otra búsqueda o explora nuestro catálogo completo
+        </p>
+        <button 
+          (click)="clearSearch()"
+          class="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-bold px-8 py-3 rounded-xl shadow-lg hover:shadow-xl transition-all transform hover:scale-105">
+          Ver todos los productos
+        </button>
+      </div>
+    </div>
+
+    <!-- Lista de productos -->
+    <div *ngIf="!loading && filtered.length > 0" class="mb-8">
+      <app-product-list [products]="paginated"></app-product-list>
+    </div>
+
+    <!-- Paginación mejorada -->
+    <div *ngIf="totalPages > 1 && !loading" 
+         class="mt-8">
+      
+      <!-- Info de paginación -->
+      <div class="text-center mb-4">
+        <p class="text-sm text-gray-600 dark:text-gray-400 font-semibold">
+          Mostrando {{ (currentPage - 1) * itemsPerPage + 1 }} - {{ Math.min(currentPage * itemsPerPage, filtered.length) }} de {{ filtered.length }} productos
+        </p>
+      </div>
+
+      <!-- Controles de paginación -->
+      <div class="flex justify-center items-center gap-3 flex-wrap">
+        
+        <!-- Botón Primera Página -->
+        <button
+          (click)="goToPage(1)"
+          [disabled]="currentPage === 1"
+          class="w-10 h-10 rounded-lg font-bold bg-white dark:bg-gray-800 border-2 border-gray-300 dark:border-gray-600 hover:border-blue-500 dark:hover:border-blue-500 text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-blue-900/20 disabled:opacity-30 disabled:cursor-not-allowed transition-all hover:scale-110 disabled:hover:scale-100 shadow-md">
+          ⏮
+        </button>
+
+        <!-- Botón Anterior -->
+        <button
+          (click)="goToPage(currentPage - 1)"
+          [disabled]="currentPage === 1"
+          class="px-5 py-2.5 rounded-lg font-bold bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white disabled:from-gray-300 disabled:to-gray-400 dark:disabled:from-gray-700 dark:disabled:to-gray-800 disabled:cursor-not-allowed transition-all hover:scale-105 disabled:hover:scale-100 shadow-lg hover:shadow-xl flex items-center gap-2">
+          <span>⬅</span>
+          <span class="hidden sm:inline">Anterior</span>
+        </button>
+
+        <!-- Números de página -->
+        <div class="flex items-center gap-2">
+          <button
+            *ngFor="let page of getPageNumbers()"
+            (click)="goToPage(page)"
+            [class.bg-gradient-to-r]="currentPage === page"
+            [class.from-red-500]="currentPage === page"
+            [class.to-yellow-500]="currentPage === page"
+            [class.text-white]="currentPage === page"
+            [class.font-black]="currentPage === page"
+            [class.scale-110]="currentPage === page"
+            [class.shadow-xl]="currentPage === page"
+            class="w-10 h-10 rounded-lg font-bold bg-white dark:bg-gray-800 border-2 border-gray-300 dark:border-gray-600 hover:border-blue-500 text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all hover:scale-105">
+            {{ page }}
+          </button>
+        </div>
+
+        <!-- Botón Siguiente -->
+        <button
+          (click)="goToPage(currentPage + 1)"
+          [disabled]="currentPage === totalPages"
+          class="px-5 py-2.5 rounded-lg font-bold bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white disabled:from-gray-300 disabled:to-gray-400 dark:disabled:from-gray-700 dark:disabled:to-gray-800 disabled:cursor-not-allowed transition-all hover:scale-105 disabled:hover:scale-100 shadow-lg hover:shadow-xl flex items-center gap-2">
+          <span class="hidden sm:inline">Siguiente</span>
+          <span>➡</span>
+        </button>
+
+        <!-- Botón Última Página -->
+        <button
+          (click)="goToPage(totalPages)"
+          [disabled]="currentPage === totalPages"
+          class="w-10 h-10 rounded-lg font-bold bg-white dark:bg-gray-800 border-2 border-gray-300 dark:border-gray-600 hover:border-blue-500 dark:hover:border-blue-500 text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-blue-900/20 disabled:opacity-30 disabled:cursor-not-allowed transition-all hover:scale-110 disabled:hover:scale-100 shadow-md">
+          ⏭
+        </button>
+      </div>
+
+      <!-- Selector de items por página -->
+      <div class="flex justify-center items-center gap-3 mt-4">
+        <label class="text-sm font-semibold text-gray-600 dark:text-gray-400">
+          Productos por página:
+        </label>
+        <select
+          [(ngModel)]="itemsPerPage"
+          (change)="onPageSizeChange()"
+          class="px-4 py-2 bg-white dark:bg-gray-800 border-2 border-gray-300 dark:border-gray-600 rounded-lg font-bold text-gray-700 dark:text-gray-300 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all">
+          <option [value]="6">6</option>
+          <option [value]="12">12</option>
+          <option [value]="18">18</option>
+          <option [value]="24">24</option>
+        </select>
+      </div>
+    </div>
 
   </div>
 </div>
