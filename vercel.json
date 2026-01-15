@@ -3,11 +3,5 @@
   "buildCommand": "npm run build",
   "outputDirectory": "dist/miniecommerce/browser",
   "installCommand": "npm install",
-  "framework": "angular",
-  "rewrites": [
-    {
-      "source": "/(.*)",
-      "destination": "/index.html"
-    }
-  ]
+  "framework": "angular"
 }
